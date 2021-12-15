@@ -5,6 +5,13 @@
         <div>
             <h4 class="mb-3 mb-md-0">Musicians</h4>
         </div>
+
+        <div class="d-flex align-items-center flex-wrap text-nowrap">
+            <a href="{{route('musician-create')}}" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0">
+                <i class="btn-icon-prepend" data-feather="edit"></i>
+                Add Musician
+            </a>
+        </div>
     </div>
     @if(Session::has('message'))
         <div class="alert alert-icon-info">
@@ -22,10 +29,29 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Main Instrument</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-
+                                @foreach($musicians as $musician)
+                                    <tr>
+                                        <td>
+                                            <a href="<?= route('musician-edit', $musician->id) ?>"><?= $musician->last_name . ', ' . $musician->first_name ?></a>
+                                        </td>
+                                        <td>
+                                            @if ($musician->instruments->isNotEmpty())
+                                                @foreach ($musician->instruments as $instrument)
+                                                    @if ($instrument->primary === config('enums.YES'))
+                                                        <?= $instrument->name ?>
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                        <td><?= ucfirst($musician->status) ?></td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

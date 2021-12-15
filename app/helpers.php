@@ -38,7 +38,7 @@ function show_class($path)
 function set_portal_theme()
 {
     // there's only "light" or "dark" theme
-    $defaultTheme = config('app.portalTheme', get_config_key('enums.web_portal_theme.LIGHT'));
+    $defaultTheme = config('app.portalTheme', get_config_key('enums.web_portal_theme.DARK'));
     $defaultTheme = (!empty(Auth::user()->portal_theme)) ? Auth::user()->portal_theme : $defaultTheme;
     return (strtolower($defaultTheme) == strtolower(get_config_key('enums.web_portal_theme.DARK')))
         ? 'css_dark/app.css?version=1'

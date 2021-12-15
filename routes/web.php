@@ -14,4 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/musicians', 'MusicianController@index')->name('musicians-list');
-// Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/musicians/new', 'MusicianController@new')->name('musician-new');
+Route::post('/musicians/new', 'MusicianController@create')->name('musician-create');
+Route::get('/musicians/edit/{id}', 'MusicianController@edit')->name('musician-edit');
+Route::post('/musicians/edit/{id}', 'MusicianController@update')->name('musician-update');
