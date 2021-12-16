@@ -42,7 +42,7 @@
                                             @if ($musician->instruments->isNotEmpty())
                                                 @foreach ($musician->instruments as $instrument)
                                                     @if ($instrument->primary === config('enums.YES'))
-                                                        <?= $instrument->name ?>
+                                                        <div><?= $instrument->name ?></div>
                                                     @endif
                                                 @endforeach
                                             @else
@@ -63,8 +63,8 @@
     <div class="row">
         <div class="col-md-12 grid-margin stretch-card">
             <div class="d-flex align-items-center flex-wrap text-nowrap">
-                @if(!empty($creditTransactions))
-                    {{$creditTransactions->appends(\Request::except('page'))->render()}}
+                @if(!empty($musicians))
+                    {{$musicians->appends(\Request::except('page'))->render()}}
                 @endif
             </div>
         </div>

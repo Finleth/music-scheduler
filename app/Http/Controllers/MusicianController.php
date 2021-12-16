@@ -87,6 +87,7 @@ class MusicianController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @param $id
      * @return Application|Factory|View
      * @throws GenericWebFatalException
