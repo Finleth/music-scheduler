@@ -5,4 +5,8 @@ $(function() {
   $('#datetimepickerExample').datetimepicker({
     format: 'LT'
   });
+
+  $('.timepicker-date-only').datetimepicker({
+    format: 'L'
+  });
 });

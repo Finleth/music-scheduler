@@ -89,7 +89,7 @@
 
     @if(Route::current()->getName() != 'musician-new')
     <div class="row">
-        <div class="col-md-5 grid-margin stretch-card">
+        <div class="col-md-6 grid-margin">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -106,17 +106,62 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th class="col-6">Name</th>
-                                    <th class="col-6">Primary</th>
+                                    <th class="col-4">Name</th>
+                                    <th class="col-4">Primary</th>
+                                    <th class="col-4"></th>
                                 </tr>
                             </thead>
-                            <tbody id="instruments-table-body">
+                            <tbody>
                                 @foreach($musician->instruments as $instrument)
                                     <tr>
-                                        <td class="col-6" current-title="{{$instrument->name}}">
-                                            <a href="{{route('instrument-edit', ['musician' => $musician->id, 'instrument' => $instrument->id])}}">{{$instrument->name}}</a>
+                                        <td class="col-4">{{$instrument->name}}</td>
+                                        <td class="col-4">{{ ucfirst($instrument->primary) }}</td>
+                                        <td class="col-4">
+                                            <a href="{{route('instrument-edit', ['musician' => $musician->id, 'instrument' => $instrument->id])}}">
+                                                <i class="btn-icon-prepend text-primary" data-feather="edit" width="20"></i>
+                                            </a>
                                         </td>
-                                        <td class="col-6">{{ ucfirst($instrument->primary) }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <h5>Blackout Dates</h5>
+                        </div>
+
+                        <div class="col-md-3 d-flex justify-content-end">
+                            <a href="{{route('blackout-new', $musician->id)}}" id="add-blackout"><i class="btn-icon-prepend text-primary" data-feather="plus-circle"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="col-4">Start</th>
+                                    <th class="col-4">End</th>
+                                    <th class="col-4"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($musician->blackouts as $blackout)
+                                    <tr>
+                                        <td class="col-4">{{$blackout->start->format(config('app.DISPLAY_DATE_FORMAT'))}}</td>
+                                        <td class="col-4">{{$blackout->end->format(config('app.DISPLAY_DATE_FORMAT'))}}</td>
+                                        <td class="col-4">
+                                            <a href="{{route('blackout-edit', ['musician' => $musician->id, 'blackout' => $blackout->id])}}">
+                                                <i class="btn-icon-prepend text-primary" data-feather="edit" width="20"></i>
+                                            </a>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

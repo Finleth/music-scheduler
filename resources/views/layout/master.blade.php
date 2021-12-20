@@ -14,6 +14,7 @@
         <!-- plugin css -->
         {!! Html::style('/assets/fonts/feather-font/css/iconfont.css') !!}
         {!! Html::style('/assets/plugins/perfect-scrollbar/perfect-scrollbar.css') !!}
+        {!! Html::style('/assets/plugins/font-awesome/css/font-awesome.min.css') !!}
         <!-- end plugin css -->
 
         @stack('plugin-styles')

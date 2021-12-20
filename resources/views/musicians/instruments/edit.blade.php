@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="d-flex align-items-center flex-wrap text-nowrap grid-margin">
-            <a href="{{ route('musicians-list') }}" class="btn btn-outline-secondary btn-icon-text mr-2 mb-2 mb-md-0">
+            <a href="{{ route('musician-edit', $instrument->musician->id) }}" class="btn btn-outline-secondary btn-icon-text mr-2 mb-2 mb-md-0">
                 <i class="btn-icon-prepend" data-feather="x"></i>
                 Cancel
             </a>

@@ -26,3 +26,10 @@ Route::post('/musicians/{id}/instrument/new', 'MusicianInstrumentController@crea
 Route::get('/musicians/{musician}/instrument/{instrument}/edit', 'MusicianInstrumentController@edit')->name('instrument-edit');
 Route::post('/musicians/{musician}/instrument/{instrument}/edit', 'MusicianInstrumentController@update')->name('instrument-update');
 Route::get('/musicians/{musician}/instrument/{instrument}/delete', 'MusicianInstrumentController@delete')->name('instrument-delete');
+
+// Musician blackout routes
+Route::get('/musicians/{id}/blackout/new', 'MusicianBlackoutController@new')->name('blackout-new');
+Route::post('/musicians/{id}/blackout/new', 'MusicianBlackoutController@create')->name('blackout-create');
+Route::get('/musicians/{musician}/blackout/{blackout}/edit', 'MusicianBlackoutController@edit')->name('blackout-edit');
+Route::post('/musicians/{musician}/blackout/{blackout}/edit', 'MusicianBlackoutController@update')->name('blackout-update');
+Route::get('/musicians/{musician}/blackout/{blackout}/delete', 'MusicianBlackoutController@delete')->name('blackout-delete');

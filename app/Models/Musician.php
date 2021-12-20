@@ -17,4 +17,14 @@ class Musician extends AbstractModel
     {
         return $this->hasMany(MusicianInstrument::class);
     }
+
+    /**
+     * Get the musicians's blackouts.
+     *
+     * @return HasMany
+     */
+    public function blackouts()
+    {
+        return $this->hasMany(MusicianBlackout::class);
+    }
 }
