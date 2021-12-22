@@ -19,14 +19,16 @@ class MusicianBlackoutController extends AbstractController
     /**
      * Display an empty form page
      *
+     * @param $id
      * @return Application|Factory|View
      * @throws GenericWebFatalException
      */
-    public function new()
+    public function new($id)
     {
         try {
             return view('musicians.blackouts.edit', [
-                'blackout' => $this->cleanUpDataForNewRecord()
+                'blackout' => $this->cleanUpDataForNewRecord(),
+                'musicianId' => $id,
             ]);
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());
@@ -71,6 +73,7 @@ class MusicianBlackoutController extends AbstractController
             $blackout = MusicianBlackout::where(['id' => $blackoutId])->first();
 
             return view('musicians.blackouts.edit', [
+                'musicianId' => $musicianId,
                 'blackout' => $blackout
             ]);
         } catch (Exception $e) {

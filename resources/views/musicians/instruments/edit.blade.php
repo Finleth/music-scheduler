@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="d-flex align-items-center flex-wrap text-nowrap grid-margin">
-            <a href="{{ route('musician-edit', $instrument->musician->id) }}" class="btn btn-outline-secondary btn-icon-text mr-2 mb-2 mb-md-0">
+            <a href="{{ route('musician-edit', $musicianId) }}" class="btn btn-outline-secondary btn-icon-text mr-2 mb-2 mb-md-0">
                 <i class="btn-icon-prepend" data-feather="x"></i>
                 Cancel
             </a>
@@ -68,7 +68,7 @@
                 Save
             </button>
             @if(Route::current()->getName() != 'instrument-new')
-            <a href="{{ route('instrument-delete', ['musician' => $instrument->musician->id, 'instrument' => $instrument->id]) }}" class="btn btn-outline-danger btn-icon-text mr-2 mb-2 mb-md-0">
+            <a href="{{ route('instrument-delete', ['musician' => $musicianId, 'instrument' => $instrument->id]) }}" class="btn btn-outline-danger btn-icon-text mr-2 mb-2 mb-md-0">
                 <i class="btn-icon-prepend" data-feather="delete"></i>
                 Delete
             </a>

@@ -18,14 +18,16 @@ class MusicianInstrumentController extends AbstractController
     /**
      * Display an empty form page
      *
+     * @param $id
      * @return Application|Factory|View
      * @throws GenericWebFatalException
      */
-    public function new()
+    public function new($id)
     {
         try {
             return view('musicians.instruments.edit', [
-                'instrument' => $this->cleanUpDataForNewRecord()
+                'instrument' => $this->cleanUpDataForNewRecord(),
+                'musicianId' => $id,
             ]);
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());
@@ -68,6 +70,7 @@ class MusicianInstrumentController extends AbstractController
             $instrument = MusicianInstrument::where(['id' => $instrumentId])->first();
 
             return view('musicians.instruments.edit', [
+                'musicianId' => $musicianId,
                 'instrument' => $instrument
             ]);
         } catch (Exception $e) {

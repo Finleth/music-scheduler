@@ -9,7 +9,7 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
-            <h4 class="mb-3 mb-md-0">Blackout</h4>
+            <h4 class="mb-3 mb-md-0">Schedule Event Type</h4>
         </div>
     </div>
     @if(Session::has('message'))
@@ -39,27 +39,47 @@
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body row">
-                        <label for="start" class="col-sm-2 col-form-label text-right">Start</label>
+                        <label for="title" class="col-sm-2 col-form-label">Title</label>
+                        <div class="col-sm-4 form-group">
+                            <input type="text" name="title" class="form-control" value="{{$eventType->title}}">
+                        </div>
+
+                        <div class="col-sm-6"></div>
+
+                        <label for="time" class="col-sm-2 col-form-label">Time</label>
                         <div class="form-group col-sm-4">
-                            <div class="input-group date timepicker-date-only" id="starttime" data-target-input="nearest">
-                                <input type="text" name="start" class="form-control datetimepicker-input" data-target="#starttime"
-                                       value="{{$blackout->start ? $blackout->start->format(config('app.INPUT_DATE_FORMAT')) : ''}}">
-                                <div class="input-group-append" data-target="#starttime" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            <div class="input-group date timepicker-time-only" id="time" data-target-input="nearest">
+                                <input type="text" name="time" class="form-control datetimepicker-input" data-target="#time"
+                                       value="{{$eventType->time ? $eventType->time->format(config('app.INPUT_DATE_FORMAT')) : ''}}">
+                                <div class="input-group-append" data-target="#time" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-sm-6"></div>
 
-                        <label for="end" class="col-sm-2 col-form-label text-right">End</label>
-                        <div class="form-group col-sm-4">
-                            <div class="input-group date timepicker-date-only" id="endtime" data-target-input="nearest">
-                                <input type="text" name="end" class="form-control datetimepicker-input" data-target="#endtime"
-                                       value="{{$blackout->end ? $blackout->end->format(config('app.INPUT_DATE_FORMAT')) : ''}}">
-                                <div class="input-group-append" data-target="#endtime" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
+                        <label for="day-of-week" class="col-sm-2 col-form-label">Day of Week</label>
+                        <div class="col-sm-4 form-group">
+                            <select name="day-of-week" class="form-control auto-select2">
+                                <option value="0">Sunday</option>
+                                <option value="1">Monday</option>
+                                <option value="2">Tuesday</option>
+                                <option value="3">Wednesday</option>
+                                <option value="4">Thursday</option>
+                                <option value="5">Friday</option>
+                                <option value="6">Saturday</option>
+                            </select>
+                        </div>
+
+                        <div class="col-sm-6"></div>
+
+                        <label for="day-of-week" class="col-sm-2 col-form-label">First of Month</label>
+                        <div class="col-sm-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="checkbox" name="first_of_month" class="form-check-input" value="1" {{$eventType->first_of_month ? 'checked' : ''}}>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -67,7 +87,7 @@
             </div>
         </div>
         <div class="d-flex align-items-center flex-wrap text-nowrap grid-margin">
-            <a href="{{ route('musician-edit', $musicianId) }}" class="btn btn-outline-secondary btn-icon-text mr-2 mb-2 mb-md-0">
+            <a href="{{ route('schedule-event-types-list') }}" class="btn btn-outline-secondary btn-icon-text mr-2 mb-2 mb-md-0">
                 <i class="btn-icon-prepend" data-feather="x"></i>
                 Cancel
             </a>
@@ -75,8 +95,8 @@
                 <i class="btn-icon-prepend" data-feather="save"></i>
                 Save
             </button>
-            @if(Route::current()->getName() != 'blackout-new')
-            <a href="{{ route('blackout-delete', ['musician' => $musicianId, 'blackout' => $blackout->id]) }}" class="btn btn-outline-danger btn-icon-text mr-2 mb-2 mb-md-0">
+            @if(Route::current()->getName() != 'schedule-event-type-new')
+            <a href="{{ route('blackout-delete', ['id' => $eventType->id]) }}" class="btn btn-outline-danger btn-icon-text mr-2 mb-2 mb-md-0">
                 <i class="btn-icon-prepend" data-feather="delete"></i>
                 Delete
             </a>
