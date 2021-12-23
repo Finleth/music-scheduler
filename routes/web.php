@@ -37,3 +37,7 @@ Route::get('/musicians/{musician}/blackout/{blackout}/delete', 'MusicianBlackout
 // Schedule event type routes
 Route::get('/schedule-event-types', 'ScheduleEventTypeController@index')->name('schedule-event-types-list');
 Route::get('/schedule-event-types/new', 'ScheduleEventTypeController@new')->name('schedule-event-type-new');
+Route::post('/schedule-event-types/new', 'ScheduleEventTypeController@create')->name('schedule-event-type-create');
+Route::get('/schedule-event-types/{id}/edit', 'ScheduleEventTypeController@edit')->name('schedule-event-type-edit');
+Route::post('/schedule-event-types/{id}/edit', 'ScheduleEventTypeController@update')->name('schedule-event-type-update');
+Route::get('/schedule-event-types/{id}/delete', 'ScheduleEventTypeController@delete')->name('schedule-event-type-delete');

@@ -1,5 +1,17 @@
 @extends('layout.master')
 
+@php
+$weekdays = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday'
+];
+@endphp
+
 @push('plugin-styles')
     {!! Html::style('/assets/plugins/jquery-tags-input/jquery.tagsinput.min.css') !!}
     {!! Html::style('/assets/plugins/select2/css/select2.min.css') !!}
@@ -50,7 +62,7 @@
                         <div class="form-group col-sm-4">
                             <div class="input-group date timepicker-time-only" id="time" data-target-input="nearest">
                                 <input type="text" name="time" class="form-control datetimepicker-input" data-target="#time"
-                                       value="{{$eventType->time ? $eventType->time->format(config('app.INPUT_DATE_FORMAT')) : ''}}">
+                                       value="{{$eventType->time ? $eventType->time->format(config('app.INPUT_TIME_FORMAT')) : ''}}">
                                 <div class="input-group-append" data-target="#time" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
                                 </div>
@@ -59,26 +71,23 @@
 
                         <div class="col-sm-6"></div>
 
-                        <label for="day-of-week" class="col-sm-2 col-form-label">Day of Week</label>
+                        <label for="day_of_week" class="col-sm-2 col-form-label">Day of Week</label>
                         <div class="col-sm-4 form-group">
-                            <select name="day-of-week" class="form-control auto-select2">
-                                <option value="0">Sunday</option>
-                                <option value="1">Monday</option>
-                                <option value="2">Tuesday</option>
-                                <option value="3">Wednesday</option>
-                                <option value="4">Thursday</option>
-                                <option value="5">Friday</option>
-                                <option value="6">Saturday</option>
+                            <select name="day_of_week" class="form-control auto-select2">
+                                @foreach ($weekdays as $index => $day)
+                                    <option value="{{$index}}" {{$eventType->day_of_week === (string) $index ? 'selected' : ''}}>{{$day}}</option>
+                                @endforeach
                             </select>
                         </div>
 
                         <div class="col-sm-6"></div>
 
-                        <label for="day-of-week" class="col-sm-2 col-form-label">First of Month</label>
+                        <label for="first_of_month" class="col-sm-2 col-form-label">First of Month</label>
                         <div class="col-sm-4 form-group">
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input type="checkbox" name="first_of_month" class="form-check-input" value="1" {{$eventType->first_of_month ? 'checked' : ''}}>
+                                    <input type="checkbox" name="first_of_month" class="form-check-input"
+                                           value="{{config('enums.YES')}}" {{$eventType->first_of_month === config('enums.YES') ? 'checked' : ''}}>
                                 </label>
                             </div>
                         </div>
@@ -96,7 +105,7 @@
                 Save
             </button>
             @if(Route::current()->getName() != 'schedule-event-type-new')
-            <a href="{{ route('blackout-delete', ['id' => $eventType->id]) }}" class="btn btn-outline-danger btn-icon-text mr-2 mb-2 mb-md-0">
+            <a href="{{ route('schedule-event-type-delete', ['id' => $eventType->id]) }}" class="btn btn-outline-danger btn-icon-text mr-2 mb-2 mb-md-0">
                 <i class="btn-icon-prepend" data-feather="delete"></i>
                 Delete
             </a>

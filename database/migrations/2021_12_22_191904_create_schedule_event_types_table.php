@@ -16,12 +16,12 @@ class CreateScheduleEventTypesTable extends Migration
         Schema::create('schedule_event_types', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->integer('minute');
-            $table->integer('hour');
-            $table->integer('day_of_month');
-            $table->integer('month');
-            $table->integer('day_of_week');
-            $table->boolean('first_of_month');
+            $table->string('minute');
+            $table->string('hour');
+            $table->string('day_of_month');
+            $table->string('month');
+            $table->string('day_of_week');
+            $table->string('first_of_month');
             $table->timestamps();
             $table->softDeletes('deleted_at', 0);
         });

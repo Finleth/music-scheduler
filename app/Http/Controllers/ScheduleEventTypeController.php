@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use DateTime;
 use Exception;
-use App\Exceptions\GenericWebFatalException;
-use App\Models\ScheduleEventType;
 use Illuminate\Http\Request;
+use App\Models\ScheduleEventType;
+use Illuminate\Support\Facades\Redirect;
+use App\Exceptions\GenericWebFatalException;
 
 class ScheduleEventTypeController extends AbstractController
 {
@@ -13,7 +15,7 @@ class ScheduleEventTypeController extends AbstractController
         'title' => 'required|string',
         'time' => 'required|string',
         'day_of_week' => 'required|integer',
-        'first_of_month' => 'boolean'
+        'first_of_month' => 'string'
     ];
 
     /**
@@ -50,28 +52,37 @@ class ScheduleEventTypeController extends AbstractController
 
     /**
      * @param Request $request
-     * @param $id
      * @return Application|Factory|View
      * @throws GenericWebFatalException
      */
-    // public function create(Request $request, $id)
-    // {
-    //     // Validate the data request
-    //     $request->validate($this->validationData);
-    //     try {
-    //         $data = $this->validAttribs($request->all());
-    //         $data['musician_id'] = $id;
-    //         $data['start'] = strtotime($data['start']);
-    //         $data['end'] = strtotime($data['end']);
+    public function create(Request $request)
+    {
+        // Validate the data request
+        $request->validate($this->validationData);
+        try {
+            $data = $request->all();
+            $time = new DateTime($data['time']);
 
-    //         MusicianBlackout::create($data);
+            $eventType = [
+                'title' => $data['title'],
+                'minute' => $time->format('i'),
+                'hour' => $time->format('G'),
+                'day_of_month' => '*',
+                'month' => '*',
+                'day_of_week' => $data['day_of_week'],
+                'first_of_month' => isset($data['first_of_month'])
+                    ? config('enums.YES')
+                    : config('enums.NO')
+            ];
 
-    //         return Redirect::route('musician-edit', $id)
-    //             ->with('message', 'The blackout was successfully added.');
-    //     } catch (Exception $e) {
-    //         throw new GenericWebFatalException($e->getMessage());
-    //     }
-    // }
+            ScheduleEventType::create($eventType);
+
+            return Redirect::route('schedule-event-types-list')
+                ->with('message', 'The event type was successfully added.');
+        } catch (Exception $e) {
+            throw new GenericWebFatalException($e->getMessage());
+        }
+    }
 
     /**
      * Display a form page with values (to be edited)
@@ -80,62 +91,67 @@ class ScheduleEventTypeController extends AbstractController
      * @return Application|Factory|View
      * @throws GenericWebFatalException
      */
-    // public function edit($musicianId, $blackoutId)
-    // {
-    //     try {
-    //         $blackout = MusicianBlackout::where(['id' => $blackoutId])->first();
+    public function edit($id)
+    {
+        try {
+            $eventType = ScheduleEventType::where(['id' => $id])->first();
+            $eventType->time = new DateTime($eventType->hour . ':' . $eventType->minute);
 
-    //         return view('musicians.blackouts.edit', [
-    //             'musicianId' => $musicianId,
-    //             'blackout' => $blackout
-    //         ]);
-    //     } catch (Exception $e) {
-    //         throw new GenericWebFatalException($e->getMessage());
-    //     }
-    // }
+            return view('schedule-event-types.edit', [
+                'eventType' => $eventType
+            ]);
+        } catch (Exception $e) {
+            throw new GenericWebFatalException($e->getMessage());
+        }
+    }
 
     /**
      * @param Request $request
-     * @param $musicianId
-     * @param $blackoutId
+     * @param $id
      * @return Application|Factory|View
      * @throws GenericWebFatalException
      */
-    // public function update(Request $request, $musicianId, $blackoutId)
-    // {
-    //     $request->validate($this->validationData);
-    //     try {
-    //         $data = $this->validAttribs($request->all());
-    //         $start = new DateTime($data['start']);
-    //         $data['start'] = $start;
-    //         $end = new DateTime($data['end']);
-    //         $data['end'] = $end;
+    public function update(Request $request, $id)
+    {
+        $request->validate($this->validationData);
+        try {
+            $data = $request->all();
+            $time = new DateTime($data['time']);
 
-    //         MusicianBlackout::where(['id' => $blackoutId])
-    //             ->update($data);
+            $eventType = [
+                'title' => $data['title'],
+                'minute' => $time->format('i'),
+                'hour' => $time->format('G'),
+                'day_of_week' => $data['day_of_week'],
+                'first_of_month' => isset($data['first_of_month'])
+                    ? config('enums.YES')
+                    : config('enums.NO')
+            ];
 
-    //         return Redirect::route('musician-edit', $musicianId)
-    //             ->with('message', 'The blackout was successfully updated.');
-    //     } catch (Exception $e) {
-    //         throw new GenericWebFatalException($e->getMessage());
-    //     }
-    // }
+            ScheduleEventType::where(['id' => $id])
+                ->update($eventType);
+
+            return Redirect::route('schedule-event-type-edit', $id)
+                ->with('message', 'The event type was successfully updated.');
+        } catch (Exception $e) {
+            throw new GenericWebFatalException($e->getMessage());
+        }
+    }
 
     /**
-     * @param $musicianId
-     * @param $blackoutId
+     * @param $id
      * @return Application|Factory|View
      * @throws GenericWebFatalException
      */
-    // public function delete($musicianId, $blackoutId)
-    // {
-    //     try {
-    //         MusicianBlackout::where(['id' => $blackoutId])->delete();
+    public function delete($id)
+    {
+        try {
+            ScheduleEventType::where(['id' => $id])->delete();
 
-    //         return Redirect::route('musician-edit', $musicianId)
-    //             ->with('message', 'The blackout was successfully deleted.');
-    //     } catch (Exception $e) {
-    //         throw new GenericWebFatalException($e->getMessage());
-    //     }
-    // }
+            return Redirect::route('schedule-event-types-list')
+                ->with('message', 'The event type was successfully deleted.');
+        } catch (Exception $e) {
+            throw new GenericWebFatalException($e->getMessage());
+        }
+    }
 }

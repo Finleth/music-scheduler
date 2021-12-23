@@ -1,5 +1,17 @@
 @extends('layout.master')
 
+@php
+$weekdays = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday'
+];
+@endphp
+
 @section('content')
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
@@ -35,12 +47,12 @@
                                 @foreach($eventTypes as $eventType)
                                     <tr>
                                         <td>
-                                            {{-- <a href="{{ route('schedule-event-type-edit', $eventType->id) }}">{{ $eventType->title }}</a> --}}
-                                            {{ $eventType->title }}
-
+                                            <a href="{{ route('schedule-event-type-edit', $eventType->id) }}">{{ $eventType->title }}</a>
                                         </td>
                                         <td>
-                                            -
+                                            {{$eventType->first_of_month === config('enums.YES') ? 'First' : 'Every'}}
+                                            {{$weekdays[(int) $eventType->day_of_week]}},
+                                            {{(new DateTime($eventType->hour . ':' . $eventType->minute))->format(config('app.INPUT_TIME_FORMAT'))}}
                                         </td>
                                     </tr>
                                 @endforeach

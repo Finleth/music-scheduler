@@ -80,6 +80,8 @@ return [
 
     'DATE_FORMAT' => env('DATE_FORMAT', 'Y-m-d'),
 
+    'INPUT_TIME_FORMAT' => env('INPUT_TIME_FORMAT', 'g:i A'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
