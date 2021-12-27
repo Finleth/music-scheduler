@@ -19,6 +19,15 @@ class Musician extends AbstractModel
     }
 
     /**
+     * Get all of the musician's events.
+     */
+    public function schedule_event_types()
+    {
+        return $this->belongsToMany(ScheduleEventType::class, 'musicians_schedule_event_types')
+            ->withPivot(['id', 'frequency']);
+    }
+
+    /**
      * Get the musicians's blackouts.
      *
      * @return HasMany

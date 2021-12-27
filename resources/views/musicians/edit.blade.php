@@ -89,7 +89,7 @@
 
     @if(Route::current()->getName() != 'musician-new')
     <div class="row">
-        <div class="col-md-6 grid-margin">
+        <div class="col-md-4 grid-margin">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -98,7 +98,7 @@
                         </div>
 
                         <div class="col-md-3 d-flex justify-content-end">
-                            <a href="{{route('instrument-new', $musician->id)}}" id="add-instrument"><i class="btn-icon-prepend text-primary" data-feather="plus-circle"></i></a>
+                            <a href="{{route('instrument-new', $musician->id)}}"><i class="btn-icon-prepend text-primary" data-feather="plus-circle"></i></a>
                         </div>
                     </div>
 
@@ -130,7 +130,48 @@
             </div>
         </div>
 
-        <div class="col-md-6 grid-margin">
+        <div class="col-md-4 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <h5>Assignable Events</h5>
+                        </div>
+
+                        <div class="col-md-3 d-flex justify-content-end">
+                            <a href="{{route('musician-event-new', $musician->id)}}"><i class="btn-icon-prepend text-primary" data-feather="plus-circle"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="col-4">Title</th>
+                                    <th class="col-4">Frequency</th>
+                                    <th class="col-4"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($musician->schedule_event_types as $event)
+                                    <tr>
+                                        <td class="col-4">{{$event->title}}</td>
+                                        <td class="col-4">{{$event->pivot->frequency}}%</td>
+                                        <td class="col-4">
+                                            <a href="{{route('musician-event-edit', ['musician' => $musician->id, 'event' => $event->pivot->id])}}">
+                                                <i class="btn-icon-prepend text-primary" data-feather="edit" width="20"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 grid-margin">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -139,7 +180,7 @@
                         </div>
 
                         <div class="col-md-3 d-flex justify-content-end">
-                            <a href="{{route('blackout-new', $musician->id)}}" id="add-blackout"><i class="btn-icon-prepend text-primary" data-feather="plus-circle"></i></a>
+                            <a href="{{route('blackout-new', $musician->id)}}"><i class="btn-icon-prepend text-primary" data-feather="plus-circle"></i></a>
                         </div>
                     </div>
 

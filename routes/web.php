@@ -41,3 +41,10 @@ Route::post('/schedule-event-types/new', 'ScheduleEventTypeController@create')->
 Route::get('/schedule-event-types/{id}/edit', 'ScheduleEventTypeController@edit')->name('schedule-event-type-edit');
 Route::post('/schedule-event-types/{id}/edit', 'ScheduleEventTypeController@update')->name('schedule-event-type-update');
 Route::get('/schedule-event-types/{id}/delete', 'ScheduleEventTypeController@delete')->name('schedule-event-type-delete');
+
+// Musician schedule event type routes
+Route::get('/musicians/{id}/event/new', 'MusicianScheduleEventTypeController@new')->name('musician-event-new');
+Route::post('/musicians/{id}/event/new', 'MusicianScheduleEventTypeController@create')->name('musician-event-create');
+Route::get('/musicians/{musician}/event/{event}/edit', 'MusicianScheduleEventTypeController@edit')->name('musician-event-edit');
+Route::post('/musicians/{musician}/event/{event}/edit', 'MusicianScheduleEventTypeController@update')->name('musician-event-update');
+Route::get('/musicians/{musician}/event/{event}/delete', 'MusicianScheduleEventTypeController@delete')->name('musician-event-delete');
