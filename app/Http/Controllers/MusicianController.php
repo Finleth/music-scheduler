@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\Musician;
-use App\Exceptions\GenericWebFatalException;
 use Illuminate\Http\Request;
+use App\Models\ScheduleEventType;
 use Illuminate\Support\Facades\Redirect;
+use App\Exceptions\GenericWebFatalException;
 
 class MusicianController extends AbstractController
 {
@@ -79,7 +80,8 @@ class MusicianController extends AbstractController
         try {
             $musician = Musician::where(['id' => $id])->first();
             return view('musicians.edit', [
-                'musician' => $musician
+                'musician' => $musician,
+                'availableEvents' => ScheduleEventType::availableEvents($id)->get()
             ]);
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());

@@ -28,6 +28,7 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
+                                    <th>Schedule</th>
                                     <th>Main Instrument</th>
                                     <th>Status</th>
                                 </tr>
@@ -37,6 +38,15 @@
                                     <tr>
                                         <td>
                                             <a href="<?= route('musician-edit', $musician->id) ?>"><?= $musician->last_name . ', ' . $musician->first_name ?></a>
+                                        </td>
+                                        <td>
+                                            @if ($musician->schedule_event_types->isNotEmpty())
+                                                @foreach ($musician->schedule_event_types as $event)
+                                                    <div><?= $event->title ?></div>
+                                                @endforeach
+                                            @else
+                                                -
+                                            @endif
                                         </td>
                                         <td>
                                             @if ($musician->instruments->isNotEmpty())

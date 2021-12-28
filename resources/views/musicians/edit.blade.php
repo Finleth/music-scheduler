@@ -138,9 +138,11 @@
                             <h5>Assignable Events</h5>
                         </div>
 
+                        @if($availableEvents->isNotEmpty())
                         <div class="col-md-3 d-flex justify-content-end">
                             <a href="{{route('musician-event-new', $musician->id)}}"><i class="btn-icon-prepend text-primary" data-feather="plus-circle"></i></a>
                         </div>
+                        @endif
                     </div>
 
                     <div class="table-responsive">
