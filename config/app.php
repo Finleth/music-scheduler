@@ -76,6 +76,8 @@ return [
     */
     'DISPLAY_DATE_FORMAT' => env('DISPLAY_DATE_FORMAT', 'M jS, Y'),
 
+    'DISPLAY_DATE_FORMAT_DAY_OF_WEEK' => env('DISPLAY_DATE_FORMAT', 'l, M jS, Y'),
+
     'INPUT_DATE_FORMAT' => env('INPUT_DATE_FORMAT', 'm/d/Y'),
 
     'DATE_FORMAT' => env('DATE_FORMAT', 'Y-m-d'),

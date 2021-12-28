@@ -48,3 +48,10 @@ Route::post('/musicians/{id}/event/new', 'MusicianScheduleEventTypeController@cr
 Route::get('/musicians/{musician}/event/{event}/edit', 'MusicianScheduleEventTypeController@edit')->name('musician-event-edit');
 Route::post('/musicians/{musician}/event/{event}/edit', 'MusicianScheduleEventTypeController@update')->name('musician-event-update');
 Route::get('/musicians/{musician}/event/{event}/delete', 'MusicianScheduleEventTypeController@delete')->name('musician-event-delete');
+
+// Schedule routes
+Route::get('/schedule', 'ScheduleController@index')->name('schedule-list');
+Route::get('/schedule/new', 'ScheduleController@new')->name('schedule-new');
+Route::post('/schedule/new', 'ScheduleController@create')->name('schedule-create');
+Route::get('/schedule/{id}/edit', 'ScheduleController@edit')->name('schedule-edit');
+Route::post('/schedule/{id}/edit', 'ScheduleController@update')->name('schedule-update');
