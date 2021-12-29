@@ -7,7 +7,7 @@
         </div>
 
         <div class="d-flex align-items-center flex-wrap text-nowrap">
-            <a href="{{route('musician-create')}}" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0">
+            <a href="{{route('schedule-generate')}}" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0">
                 <i class="btn-icon-prepend" data-feather="edit"></i>
                 Generate Schedule
             </a>

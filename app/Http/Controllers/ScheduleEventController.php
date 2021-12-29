@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Exceptions\GenericWebFatalException;
-use App\Models\Musician;
 use App\Models\ScheduleEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
