@@ -38,7 +38,7 @@
                                         <td class="col-6">
                                             @foreach ($day->events as $event)
                                                 <div class="mb-1">
-                                                    <a href="#">{{$event->schedule_event_type->title}}: {{$event->musician->first_name}}</a>
+                                                    <a href="{{route('schedule-event-edit', $event->id)}}">{{$event->schedule_event_type->title}}: {{$event->musician->first_name}}</a>
                                                 </div>
                                             @endforeach
                                         </td>

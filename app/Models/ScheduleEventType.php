@@ -19,6 +19,14 @@ class ScheduleEventType extends AbstractModel
     ];
 
     /**
+     * Get the event type's available musicians.
+     */
+    public function musicians()
+    {
+        return $this->belongsToMany(Musician::class, 'musicians_schedule_event_types');
+    }
+
+    /**
      * Scope a query to get all the available events for a musician to be assigned
      *
      * @param Builder $query
