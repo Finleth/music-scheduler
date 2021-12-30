@@ -15,7 +15,7 @@ class ScheduleEvent extends AbstractModel
      */
     public function schedule()
     {
-        return $this->belongsTo(ScheduleEvent::class);
+        return $this->belongsTo(Schedule::class);
     }
 
     /**

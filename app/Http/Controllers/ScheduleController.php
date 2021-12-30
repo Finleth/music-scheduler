@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use DateTime;
 use Exception;
+use App\Exceptions\GenericWebFatalException;
 use App\Models\Schedule;
+use App\Services\Schedule\ScheduleService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use App\Exceptions\GenericWebFatalException;
 
 class ScheduleController extends AbstractController
 {
@@ -15,6 +16,16 @@ class ScheduleController extends AbstractController
         'start_date' => 'required|date',
         'end_date' => 'required|date|after_or_equal:start'
     ];
+    protected $scheduleService;
+
+    /**
+     * ScheduleController constructor.
+     */
+    public function __construct()
+    {
+        $this->scheduleService = new ScheduleService();
+    }
+
 
     /**
      * @return Application|Factory|View
@@ -24,7 +35,7 @@ class ScheduleController extends AbstractController
     {
         try {
             return view('schedule.list', [
-                'schedule' => Schedule::paginate(config('app.pageSize'))
+                'schedule' => Schedule::orderBy('event_date', 'ASC')->paginate(config('app.pageSize'))
             ]);
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());
@@ -52,9 +63,24 @@ class ScheduleController extends AbstractController
     public function generate(Request $request)
     {
         $request->validate($this->validationData);
+
         try {
+            $responseMessage = 'The schedule was successfully generated.';
+            $responseType = 'message';
+            $data = $this->validAttribs($request->all());
+
+            $response = $this->scheduleService->generateSchedule(
+                $data['start_date'],
+                $data['end_date']
+            );
+
+            if (!$response['success']) {
+                $responseType = 'error';
+                $responseMessage = 'There was an error creating the schedule.';
+            }
+
             return Redirect::route('schedule-list')
-                ->with('message', 'The schedule was successfully generated.');
+                ->with($responseType, $responseMessage);
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());
         }

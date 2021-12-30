@@ -23,7 +23,8 @@ class ScheduleEventType extends AbstractModel
      */
     public function musicians()
     {
-        return $this->belongsToMany(Musician::class, 'musicians_schedule_event_types');
+        return $this->belongsToMany(Musician::class, 'musicians_schedule_event_types')
+            ->withPivot(['frequency']);
     }
 
     /**

@@ -19,6 +19,12 @@
         </div>
     @endif
 
+    @if(Session::has('error'))
+        <div class="alert alert-icon-danger">
+            {{Session::get('error')}}
+        </div>
+    @endif
+
     <div class="row">
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
