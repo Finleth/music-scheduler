@@ -26,7 +26,7 @@ class ScheduleEventTypeController extends AbstractController
     {
         try {
             return view('schedule-event-types.list', [
-                'eventTypes' => ScheduleEventType::paginate(config('app.pageSize'))
+                'eventTypes' => ScheduleEventType::paginate(config('app.PAGE_SIZE'))
             ]);
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());

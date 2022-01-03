@@ -25,7 +25,7 @@ class MusicianController extends AbstractController
     {
         try {
             return view('musicians.list', [
-                'musicians' => Musician::paginate(config('app.pageSize'))
+                'musicians' => Musician::paginate(config('app.PAGE_SIZE'))
             ]);
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());

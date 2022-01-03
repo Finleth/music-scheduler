@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 
 class ScheduleEvent extends AbstractModel
 {
@@ -36,5 +37,29 @@ class ScheduleEvent extends AbstractModel
     public function musician()
     {
         return $this->belongsTo(Musician::class);
+    }
+
+    /**
+     *
+     * Scope a query to get a musician's most recent
+     * schedule event of a certain type.
+     *
+     * @param Builder $query
+     * @param integer $scheduleEventTypeId
+     *
+     * @return Builder
+     */
+    public function scopeMostRecentTypeForMusician(
+        Builder $query,
+        int $musicianId,
+        int $scheduleEventTypeId
+    ) {
+        return $query
+            ->join('schedule', 'schedule.id', '=', 'schedule_events.schedule_id')
+            ->where([
+                'musician_id' => $musicianId,
+                'schedule_event_type_id' => $scheduleEventTypeId
+            ])
+            ->orderBy('schedule.event_date', 'DESC');
     }
 }

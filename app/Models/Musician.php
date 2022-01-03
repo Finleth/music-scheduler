@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-
 class Musician extends AbstractModel
 {
     protected $table = 'musicians';

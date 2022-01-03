@@ -61,9 +61,7 @@
     <div class="row">
         <div class="col-md-12 grid-margin stretch-card">
             <div class="d-flex align-items-center flex-wrap text-nowrap">
-                @if(!empty($musicians))
-                    {{$musicians->appends(\Request::except('page'))->render()}}
-                @endif
+                {{$schedule->links()}}
             </div>
         </div>
     </div>

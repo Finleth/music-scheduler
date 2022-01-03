@@ -35,7 +35,7 @@ class ScheduleController extends AbstractController
     {
         try {
             return view('schedule.list', [
-                'schedule' => Schedule::orderBy('event_date', 'ASC')->paginate(config('app.pageSize'))
+                'schedule' => Schedule::orderBy('event_date', 'ASC')->paginate(config('app.PAGE_SIZE'))
             ]);
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());

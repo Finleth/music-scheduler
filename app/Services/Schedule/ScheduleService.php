@@ -20,6 +20,7 @@ class ScheduleService
 {
     protected $logger;
     protected $defaultWeight = 10;
+    protected $defaultMultiplier = 10;
     protected $dayInterval;
     protected $dateFormat;
 
@@ -71,16 +72,24 @@ class ScheduleService
                             ['event_date' => $currentDate->format($this->dateFormat)]
                         );
 
-                        $musician = $this->getMusicianToAssign($type, $currentDate);
+                        // skip if event already exists
+                        $eventExists = ScheduleEvent::where([
+                            'schedule_id' => $scheduleDate->id,
+                            'schedule_event_type_id' => $type->id
+                        ])->first();
 
-                        if ($type && $scheduleDate && $musician) {
-                            $this->createScheduleEvent($type, $scheduleDate, $musician);
-                        } else {
-                            $this->logger->warning(sprintf(
-                                'Unable to create schedule event for %s on %s',
-                                $type->title,
-                                $currentDate->format($this->dateFormat)
-                            ));
+                        if (!$eventExists) {
+                            $musician = $this->getMusicianToAssign($type, $currentDate);
+
+                            if ($type && $scheduleDate && $musician) {
+                                $this->createScheduleEvent($type, $scheduleDate, $musician);
+                            } else {
+                                $this->logger->warning(sprintf(
+                                    'Unable to create schedule event for %s on %s',
+                                    $type->title,
+                                    $currentDate->format($this->dateFormat)
+                                ));
+                            }
                         }
                     }
                 }
@@ -117,9 +126,8 @@ class ScheduleService
             ];
 
             foreach ($type->musicians as $musician) {
-                $scheduleEvent = $musician->schedule_events()->where([
-                    'schedule_event_type_id' => $type->id
-                ])->first();
+                $scheduleEvent = ScheduleEvent::mostRecentTypeForMusician($musician->id, $type->id)->first();
+
                 $frequency = $musician->pivot->frequency / 100;
 
                 if ($scheduleEvent) {
@@ -132,8 +140,20 @@ class ScheduleService
                 } else {
                     $musicianWeights[$musician->id] = [
                         'musician' => $musician,
-                        'weight' => $this->defaultWeight * 5 * $frequency
+                        'weight' => $this->defaultWeight * $this->defaultMultiplier * $frequency
                     ];
+                }
+
+                $currentSchedule = Schedule::where(['event_date' => $currentDate->format(config('app.DATE_FORMAT'))])->first();
+                // if musician already scheduled for a different event that day, lower their priority
+                if ($currentSchedule) {
+                    $sameDayEvent = $musician->schedule_events()->where([
+                        'schedule_id' => $currentSchedule->id
+                    ])->first();
+
+                    if ($sameDayEvent) {
+                        $musicianWeights[$musician->id]['weight'] /= $this->defaultMultiplier;
+                    }
                 }
             }
 
