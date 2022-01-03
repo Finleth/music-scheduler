@@ -99,6 +99,7 @@ class ScheduleService
 
             DB::commit();
             $response['success'] = true;
+
         } catch (Exception $e) {
             DB::rollback();
             $this->logger->warning($e->getMessage());
@@ -117,7 +118,8 @@ class ScheduleService
     private function getMusicianToAssign(
         ScheduleEventType $type,
         DateTime $currentDate
-    ) {
+    )
+    {
         try {
             $musicianWeights = [];
             $pickedMusician = [
@@ -155,6 +157,7 @@ class ScheduleService
                         $musicianWeights[$musician->id]['weight'] /= $this->defaultMultiplier;
                     }
                 }
+
             }
 
             foreach ($musicianWeights as $musicianWeight) {
@@ -165,6 +168,7 @@ class ScheduleService
             }
 
             return $pickedMusician['musician'];
+
         } catch (Exception $e) {
             $this->logger->warning($e->getMessage());
         }
@@ -182,15 +186,13 @@ class ScheduleService
         ScheduleEventType $type,
         Schedule $scheduleDate,
         Musician $musician
-    ) {
+    )
+    {
         try {
-            return ScheduleEvent::firstOrCreate(
-                [
-                    'schedule_event_type_id' => $type->id,
-                    'schedule_id' => $scheduleDate->id
-                ],
-                ['musician_id' => $musician->id]
-            );
+            return ScheduleEvent::firstOrCreate([
+                'schedule_event_type_id' => $type->id,
+                'schedule_id' => $scheduleDate->id
+            ], ['musician_id' => $musician->id]);
         } catch (Exception $e) {
             $this->logger->warning($e->getMessage());
         }
