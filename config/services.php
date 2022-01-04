@@ -30,4 +30,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'time_tree' => [
+        'TOKEN' => env('TIME_TREE_TOKEN'),
+        'CALENDAR_ID' => env('TIME_TREE_CALENDAR_ID')
+    ]
+
 ];

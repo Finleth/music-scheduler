@@ -92,6 +92,8 @@ return [
 
     'INPUT_TIME_FORMAT' => env('INPUT_TIME_FORMAT', 'g:i A'),
 
+    'ISO_8601_DATE_FORMAT' => 'c',
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

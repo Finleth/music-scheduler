@@ -5,11 +5,13 @@ namespace App\Services\Schedule;
 use DateTime;
 use Exception;
 use DateInterval;
+use DateTimeZone;
 use App\Models\Musician;
 use App\Models\Schedule;
 use App\Models\ScheduleEvent;
 use App\Models\ScheduleEventType;
 use Illuminate\Support\Facades\DB;
+use App\Services\TimeTree\TimeTreeService;
 
 /**
  *
@@ -24,6 +26,8 @@ class ScheduleService
     protected $dayInterval;
     protected $dateFormat;
 
+    protected $timeTreeService;
+
     /**
      * ScheduleService's class constructor
      */
@@ -32,6 +36,8 @@ class ScheduleService
         $this->logger = app('log');
         $this->dayInterval = new DateInterval('P1D');
         $this->dateFormat = config('app.DATE_FORMAT');
+        $this->timeFormat = config('app.TIME_FORMAT');
+        $this->timeTreeService = new TimeTreeService();
     }
 
     /**
@@ -82,7 +88,18 @@ class ScheduleService
                             $musician = $this->getMusicianToAssign($type, $currentDate);
 
                             if ($type && $scheduleDate && $musician) {
-                                $this->createScheduleEvent($type, $scheduleDate, $musician);
+                                $scheduleEvent = $this->createScheduleEvent($type, $scheduleDate, $musician);
+
+                                // push event to TimeTree
+                                if ($scheduleEvent) {
+                                    $this->createTimeTreeEvent($scheduleEvent);
+                                } else {
+                                    $this->logger->warning(sprintf(
+                                        'Error creating schedule event for %s on %s',
+                                        $type->title,
+                                        $currentDate->format($this->dateFormat)
+                                    ));
+                                }
                             } else {
                                 $this->logger->warning(sprintf(
                                     'Unable to create schedule event for %s on %s',
@@ -147,7 +164,7 @@ class ScheduleService
                     ];
                 }
 
-                $currentSchedule = Schedule::where(['event_date' => $currentDate->format(config('app.DATE_FORMAT'))])->first();
+                $currentSchedule = Schedule::where(['event_date' => $currentDate->format($this->dateFormat)])->first();
                 // if musician already scheduled for a different event that day, lower their priority
                 if ($currentSchedule) {
                     $sameDayEvent = $musician->schedule_events()->where([
@@ -194,6 +211,45 @@ class ScheduleService
                 'schedule_event_type_id' => $type->id,
                 'schedule_id' => $scheduleDate->id
             ], ['musician_id' => $musician->id]);
+        } catch (Exception $e) {
+            $this->logger->warning($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param ScheduleEvent $scheduleEvent
+     *
+     * @return void
+     */
+    public function createTimeTreeEvent(ScheduleEvent $scheduleEvent)
+    {
+        try {
+            $start = new DateTime(sprintf(
+                '%s %s:%s',
+                $scheduleEvent->schedule->event_date->format($this->dateFormat),
+                $scheduleEvent->schedule_event_type->hour,
+                $scheduleEvent->schedule_event_type->minute
+            ), new DateTimeZone('America/Los_Angeles'));
+            $end = clone $start;
+            $end->add(new DateInterval('PT1H'));
+
+            // convert to UTC for time tree
+            $utcTimezone = new DateTimeZone('UTC');
+            $start->setTimezone($utcTimezone);
+            $end->setTimezone($utcTimezone);
+
+            $timeTreeEventId = $this->timeTreeService->createEvent(
+                $scheduleEvent->schedule_event_type->title . ': ' . $scheduleEvent->musician->first_name,
+                false,
+                $start,
+                $end,
+                0
+            );
+
+            $scheduleEvent->time_tree_event_id = $timeTreeEventId;
+            $scheduleEvent->save();
+
         } catch (Exception $e) {
             $this->logger->warning($e->getMessage());
         }
