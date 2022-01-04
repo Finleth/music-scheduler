@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use DateTime;
+use Illuminate\Database\Eloquent\Builder;
+
 class Musician extends AbstractModel
 {
     protected $table = 'musicians';
@@ -44,5 +47,29 @@ class Musician extends AbstractModel
     public function blackouts()
     {
         return $this->hasMany(MusicianBlackout::class);
+    }
+
+    /**
+     *
+     * Scope a query to get active musicians without a blackout for a specific date
+     *
+     * @param Builder $query
+     * @param DateTime $date
+     *
+     * @return Builder $query
+     */
+    public function scopeAvailable(
+        Builder $query,
+        DateTime $date
+    )
+    {
+        $dateString = $date->format(config('app.DATE_FORMAT'));
+
+        return $query->whereDoesntHave('blackouts', function($query) use ($dateString) {
+            $query->where('start', '<=', $dateString)
+                  ->where('end', '>=', $dateString);
+        })->where([
+            'status' => config('enums.status.ACTIVE')
+        ]);
     }
 }

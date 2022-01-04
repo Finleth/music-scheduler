@@ -113,7 +113,7 @@ class ScheduleService
      * @param ScheduleEventType $type
      * @param DateTime $currentDate
      *
-     * @return Musician
+     * @return Musician|null
      */
     private function getMusicianToAssign(
         ScheduleEventType $type,
@@ -126,8 +126,9 @@ class ScheduleService
                 'musician' => null,
                 'weight' => 0
             ];
+            $musicians = $type->musicians()->available($currentDate)->get();
 
-            foreach ($type->musicians as $musician) {
+            foreach ($musicians as $musician) {
                 $scheduleEvent = ScheduleEvent::mostRecentTypeForMusician($musician->id, $type->id)->first();
 
                 $frequency = $musician->pivot->frequency / 100;
