@@ -18,6 +18,7 @@ class TimeTreeService
     protected $accept = 'application/vnd.timetree.v1+json';
     protected $defaultAttributes = [
         'category' => 'schedule',
+        'all_day' => false,
         'labelType' => 'label',
         'timezone' => 'America/Los_Angeles'
     ];
@@ -44,7 +45,6 @@ class TimeTreeService
      * Create a TimeTree event for the calendar
      *
      * @param string $title
-     * @param boolean $allDay
      * @param DateTime $start (UTC assumed)
      * @param DateTime $end   (UTC assumed)
      * @param integer $label
@@ -53,7 +53,6 @@ class TimeTreeService
      */
     public function createEvent(
         string $title,
-        bool $allDay,
         DateTime $start,
         DateTime $end,
         int $label
@@ -65,7 +64,7 @@ class TimeTreeService
                     'attributes' => [
                         'category' => $this->defaultAttributes['category'],
                         'title' => $title,
-                        'all_day' => $allDay,
+                        'all_day' => $this->defaultAttributes['all_day'],
                         'start_at' => $start->format(config('app.ISO_8601_DATE_FORMAT')),
                         'end_at' => $end->format(config('app.ISO_8601_DATE_FORMAT')),
                         'start_timezone' => $this->defaultAttributes['timezone'],
@@ -86,10 +85,64 @@ class TimeTreeService
                 'POST',
                 $this->url . sprintf('/calendars/%s/events', $this->calendarId),
                 $body,
-                [
-                    'Accept-Type' => $this->accept,
-                    'Authorization' => 'Bearer ' . $this->token
+                ['Accept-Type' => $this->accept, 'Authorization' => 'Bearer ' . $this->token]
+            );
+
+            return $response->data->id ?? null;
+
+        } catch (Exception $e) {
+            $this->logger->warning($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * Update a TimeTree event for the calendar
+     *
+     * @param integer $eventId
+     * @param string $title
+     * @param DateTime $start (UTC assumed)
+     * @param DateTime $end   (UTC assumed)
+     * @param integer $label
+     *
+     * @return integer|null $timeTreeEventId
+     */
+    public function updateEvent(
+        string $eventId,
+        string $title,
+        DateTime $start,
+        DateTime $end,
+        int $label
+    )
+    {
+        try {
+            $body = [
+                'data' => [
+                    'attributes' => [
+                        'category' => $this->defaultAttributes['category'],
+                        'title' => $title,
+                        'all_day' => $this->defaultAttributes['all_day'],
+                        'start_at' => $start->format(config('app.ISO_8601_DATE_FORMAT')),
+                        'end_at' => $end->format(config('app.ISO_8601_DATE_FORMAT')),
+                        'start_timezone' => $this->defaultAttributes['timezone'],
+                        'end_timezone' => $this->defaultAttributes['timezone']
+                    ],
+                    'relationships' => [
+                        'label' => [
+                            'data' => [
+                                'id' => $this->labels[$label],
+                                'type' => $this->defaultAttributes['labelType']
+                            ]
+                        ]
+                    ]
                 ]
+            ];
+
+            $response = $this->apiService->send(
+                'PUT',
+                $this->url . sprintf('/calendars/%s/events/%s', $this->calendarId, $eventId),
+                $body,
+                ['Accept-Type' => $this->accept, 'Authorization' => 'Bearer ' . $this->token]
             );
 
             return $response->data->id ?? null;

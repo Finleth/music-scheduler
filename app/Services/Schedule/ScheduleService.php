@@ -25,6 +25,8 @@ class ScheduleService
     protected $defaultMultiplier = 10;
     protected $dayInterval;
     protected $dateFormat;
+    protected $scheduleEventStart;
+    protected $scheduleEventEnd;
 
     protected $timeTreeService;
 
@@ -225,25 +227,12 @@ class ScheduleService
     public function createTimeTreeEvent(ScheduleEvent $scheduleEvent)
     {
         try {
-            $start = new DateTime(sprintf(
-                '%s %s:%s',
-                $scheduleEvent->schedule->event_date->format($this->dateFormat),
-                $scheduleEvent->schedule_event_type->hour,
-                $scheduleEvent->schedule_event_type->minute
-            ), new DateTimeZone('America/Los_Angeles'));
-            $end = clone $start;
-            $end->add(new DateInterval('PT1H'));
-
-            // convert to UTC for time tree
-            $utcTimezone = new DateTimeZone('UTC');
-            $start->setTimezone($utcTimezone);
-            $end->setTimezone($utcTimezone);
+            $this->setEventTime($scheduleEvent);
 
             $timeTreeEventId = $this->timeTreeService->createEvent(
                 $scheduleEvent->schedule_event_type->title . ': ' . $scheduleEvent->musician->first_name,
-                false,
-                $start,
-                $end,
+                $this->scheduleEventStart,
+                $this->scheduleEventEnd,
                 0
             );
 
@@ -253,5 +242,51 @@ class ScheduleService
         } catch (Exception $e) {
             $this->logger->warning($e->getMessage());
         }
+    }
+
+    /**
+     *
+     * @param ScheduleEvent $scheduleEvent
+     *
+     * @return void
+     */
+    public function updateTimeTreeEvent(ScheduleEvent $scheduleEvent)
+    {
+        try {
+            $this->setEventTime($scheduleEvent);
+
+            $this->timeTreeService->updateEvent(
+                $scheduleEvent->time_tree_event_id,
+                $scheduleEvent->schedule_event_type->title . ': ' . $scheduleEvent->musician->first_name,
+                $this->scheduleEventStart,
+                $this->scheduleEventEnd,
+                0
+            );
+        } catch (Exception $e) {
+            $this->logger->warning($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param ScheduleEvent $scheduleEvent
+     *
+     * @return void
+     */
+    private function setEventTime(ScheduleEvent $scheduleEvent)
+    {
+        $this->scheduleEventStart = new DateTime(sprintf(
+            '%s %s:%s',
+            $scheduleEvent->schedule->event_date->format($this->dateFormat),
+            $scheduleEvent->schedule_event_type->hour,
+            $scheduleEvent->schedule_event_type->minute
+        ), new DateTimeZone('America/Los_Angeles'));
+        $this->scheduleEventEnd = clone $this->scheduleEventStart;
+        $this->scheduleEventEnd->add(new DateInterval('PT1H'));
+
+        // convert to UTC for time tree
+        $utcTimezone = new DateTimeZone('UTC');
+        $this->scheduleEventStart->setTimezone($utcTimezone);
+        $this->scheduleEventEnd->setTimezone($utcTimezone);
     }
 }
