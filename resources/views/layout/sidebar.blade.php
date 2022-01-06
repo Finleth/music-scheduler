@@ -13,7 +13,7 @@
         <ul class="nav">
             <li class="nav-item nav-category">Schedule</li>
                 <li class="nav-item {{ active_class(['schedule']) }}">
-                    <a href="{{ route('schedule-list') }}" class="nav-link">
+                    <a href="{{ route('calendar-list') }}" class="nav-link">
                         <i class="link-icon" data-feather="calendar"></i>
                         <span class="link-title">Schedule</span>
                     </a>

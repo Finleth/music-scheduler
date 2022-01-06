@@ -36,7 +36,6 @@ class TimeTreeService
     {
         $this->logger = app('log');
         $this->token = config('services.time_tree.TOKEN');
-        $this->calendarId = config('services.time_tree.CALENDAR_ID');
         $this->apiService = new ApiClientRequestService();
     }
 
@@ -44,6 +43,7 @@ class TimeTreeService
      *
      * Create a TimeTree event for the calendar
      *
+     * @param string $calendarId
      * @param string $title
      * @param DateTime $start (UTC assumed)
      * @param DateTime $end   (UTC assumed)
@@ -52,6 +52,7 @@ class TimeTreeService
      * @return integer|null $timeTreeEventId
      */
     public function createEvent(
+        string $calendarId,
         string $title,
         DateTime $start,
         DateTime $end,
@@ -83,7 +84,7 @@ class TimeTreeService
 
             $response = $this->apiService->send(
                 'POST',
-                $this->url . sprintf('/calendars/%s/events', $this->calendarId),
+                $this->url . sprintf('/calendars/%s/events', $calendarId),
                 $body,
                 ['Accept-Type' => $this->accept, 'Authorization' => 'Bearer ' . $this->token]
             );
@@ -99,7 +100,8 @@ class TimeTreeService
      *
      * Update a TimeTree event for the calendar
      *
-     * @param integer $eventId
+     * @param string $calendarId,
+     * @param string $eventId
      * @param string $title
      * @param DateTime $start (UTC assumed)
      * @param DateTime $end   (UTC assumed)
@@ -108,6 +110,7 @@ class TimeTreeService
      * @return integer|null $timeTreeEventId
      */
     public function updateEvent(
+        string $calendarId,
         string $eventId,
         string $title,
         DateTime $start,
@@ -140,7 +143,7 @@ class TimeTreeService
 
             $response = $this->apiService->send(
                 'PUT',
-                $this->url . sprintf('/calendars/%s/events/%s', $this->calendarId, $eventId),
+                $this->url . sprintf('/calendars/%s/events/%s', $calendarId, $eventId),
                 $body,
                 ['Accept-Type' => $this->accept, 'Authorization' => 'Bearer ' . $this->token]
             );

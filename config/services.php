@@ -31,8 +31,7 @@ return [
     ],
 
     'time_tree' => [
-        'TOKEN' => env('TIME_TREE_TOKEN'),
-        'CALENDAR_ID' => env('TIME_TREE_CALENDAR_ID')
+        'TOKEN' => env('TIME_TREE_TOKEN')
     ]
 
 ];

@@ -50,9 +50,10 @@ Route::post('/musicians/{musician}/event/{event}/edit', 'MusicianScheduleEventTy
 Route::get('/musicians/{musician}/event/{event}/delete', 'MusicianScheduleEventTypeController@delete')->name('musician-event-delete');
 
 // Schedule routes
-Route::get('/schedule', 'ScheduleController@index')->name('schedule-list');
-Route::get('/schedule/generate', 'ScheduleController@generateDisplay')->name('schedule-generate-display');
-Route::post('/schedule/generate', 'ScheduleController@generate')->name('schedule-generate');
+Route::get('/schedule', 'ScheduleController@calendarList')->name('calendar-list');
+Route::get('/schedule/{id}', 'ScheduleController@index')->name('schedule-list');
+Route::get('/schedule/{id}/generate', 'ScheduleController@generateDisplay')->name('schedule-generate-display');
+Route::post('/schedule/{id}/generate', 'ScheduleController@generate')->name('schedule-generate');
 
 // Schedule event routes
 Route::get('/schedule-event/{id}/edit', 'ScheduleEventController@edit')->name('schedule-event-edit');

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 class Schedule extends AbstractModel
 {
     protected $table = 'schedule';
-    protected $fillable = ['event_date'];
+    protected $fillable = ['time_tree_calendar_id', 'event_date'];
     protected $casts = [
         'event_date' => 'datetime'
     ];
@@ -24,6 +24,16 @@ class Schedule extends AbstractModel
     }
 
     /**
+     * Get the schedule's calendar.
+     *
+     * @return BelongsTo
+     */
+    public function calendar()
+    {
+        return $this->belongsTo(Calendar::class, 'time_tree_calendar_id', 'id');
+    }
+
+    /**
      *
      * Scope a query to return schedule rows for today or in the future
      *
@@ -35,5 +45,19 @@ class Schedule extends AbstractModel
     {
         $today = new DateTime();
         return $query->where('event_date', '>=', $today->format(config('app.DATE_FORMAT')));
+    }
+
+    /**
+     *
+     * Scope a query to return schedule rows by time_tree_calendar_id
+     *
+     * @param Builder $query
+     * @param integer $id
+     *
+     * @return Builder
+     */
+    public function scopeOfCalendar(Builder $query, int $id)
+    {
+        return $query->where('time_tree_calendar_id', $id);
     }
 }

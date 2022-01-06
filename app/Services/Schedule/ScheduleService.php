@@ -44,12 +44,14 @@ class ScheduleService
 
     /**
      *
+     * @param integer $id
      * @param string $startDate
      * @param string $endDate
      *
      * @return array
      */
     public function generateSchedule(
+        int $id,
         string $startDate,
         string $endDate
     )
@@ -76,9 +78,10 @@ class ScheduleService
                             continue;
                         }
 
-                        $scheduleDate = Schedule::firstOrCreate(
-                            ['event_date' => $currentDate->format($this->dateFormat)]
-                        );
+                        $scheduleDate = Schedule::firstOrCreate([
+                            'time_tree_calendar_id' => $id,
+                            'event_date' => $currentDate->format($this->dateFormat)
+                        ]);
 
                         // skip if event already exists
                         $eventExists = ScheduleEvent::where([
@@ -230,6 +233,7 @@ class ScheduleService
             $this->setEventTime($scheduleEvent);
 
             $timeTreeEventId = $this->timeTreeService->createEvent(
+                $scheduleEvent->schedule->calendar->time_tree_calendar_id,
                 $scheduleEvent->schedule_event_type->title . ': ' . $scheduleEvent->musician->first_name,
                 $this->scheduleEventStart,
                 $this->scheduleEventEnd,
@@ -256,6 +260,7 @@ class ScheduleService
             $this->setEventTime($scheduleEvent);
 
             $this->timeTreeService->updateEvent(
+                $scheduleEvent->schedule->calendar->time_tree_calendar_id,
                 $scheduleEvent->time_tree_event_id,
                 $scheduleEvent->schedule_event_type->title . ': ' . $scheduleEvent->musician->first_name,
                 $this->scheduleEventStart,
