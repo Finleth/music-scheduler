@@ -58,7 +58,7 @@ class ScheduleController extends AbstractController
                     ->futureEvents()
                     ->orderBy('event_date', 'ASC')
                     ->paginate(config('app.PAGE_SIZE')),
-                'calendarId' => $id
+                'calendar' => Calendar::where('id', $id)->first()
             ]);
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());
@@ -77,7 +77,7 @@ class ScheduleController extends AbstractController
         try {
             return view('schedule.generate', [
                 'today' => new DateTime(),
-                'calendarId' => $id
+                'calendar' => Calendar::where('id', $id)->first()
             ]);
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());

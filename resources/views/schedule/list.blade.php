@@ -3,11 +3,11 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
-            <h4 class="mb-3 mb-md-0">Schedule</h4>
+            <h4 class="mb-3 mb-md-0">Calendar: {{$calendar->name}}</h4>
         </div>
 
         <div class="d-flex align-items-center flex-wrap text-nowrap">
-            <a href="{{route('schedule-generate', $calendarId)}}" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0">
+            <a href="{{route('schedule-generate', $calendar->id)}}" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0">
                 <i class="btn-icon-prepend" data-feather="edit"></i>
                 Generate Schedule
             </a>

@@ -63,7 +63,7 @@ class ScheduleEventController extends AbstractController
                 $this->scheduleService->updateTimeTreeEvent($scheduleEvent);
             } // don't create event on TimeTree when updating if time_tree_event_id doesn't exist for now
 
-            return Redirect::route('schedule-list')
+            return Redirect::route('schedule-list', $scheduleEvent->schedule->calendar->id)
                 ->with('message', 'The event was successfully updated.');
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());

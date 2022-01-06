@@ -8,7 +8,7 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
-            <h4 class="mb-3 mb-md-0">Generate Schedule</h4>
+            <h4 class="mb-3 mb-md-0">Generate Schedule: {{$calendar->name}}</h4>
         </div>
     </div>
     @if(Session::has('message'))
@@ -66,7 +66,7 @@
             </div>
         </div>
         <div class="d-flex align-items-center flex-wrap text-nowrap grid-margin">
-            <a href="{{ route('schedule-list', $calendarId) }}" class="btn btn-outline-secondary btn-icon-text mr-2 mb-2 mb-md-0">
+            <a href="{{ route('schedule-list', $calendar->id) }}" class="btn btn-outline-secondary btn-icon-text mr-2 mb-2 mb-md-0">
                 <i class="btn-icon-prepend" data-feather="x"></i>
                 Cancel
             </a>
