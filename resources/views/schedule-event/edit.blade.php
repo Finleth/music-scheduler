@@ -38,11 +38,16 @@
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body row">
+                        <div class="col-sm-2">Date</div>
+                        <div class="col-sm-4 form-group">
+                            {{$scheduleEvent->schedule->event_date->format(config('app.DISPLAY_DATE_FORMAT'))}}
+                        </div>
+                        <div class="col-sm-6"></div>
+
                         <label for="title" class="col-sm-2 col-form-label">Title</label>
                         <div class="col-sm-4 form-group">
                             <input type="text" name="title" class="form-control" value="{{$scheduleEvent->schedule_event_type->title}}" readonly>
                         </div>
-
                         <div class="col-sm-6"></div>
 
                         <label for="musician_id" class="col-sm-2 col-form-label">Musician</label>

@@ -47,13 +47,15 @@ class ScheduleService
      * @param integer $id
      * @param string $startDate
      * @param string $endDate
+     * @param ScheduleEventType $scheduleEventType
      *
      * @return array
      */
     public function generateSchedule(
         int $id,
         string $startDate,
-        string $endDate
+        string $endDate,
+        ScheduleEventType $scheduleEventType = null
     )
     {
         $response = [
@@ -62,7 +64,13 @@ class ScheduleService
         ];
 
         try {
-            $scheduleEventTypes = ScheduleEventType::all();
+            $scheduleEventTypes = [];
+
+            if ($scheduleEventType) {
+                $scheduleEventTypes[] = $scheduleEventType;
+            } else {
+                $scheduleEventTypes = ScheduleEventType::all();
+            }
             $currentDate = new DateTime($startDate);
             $endDate = new DateTime($endDate);
 

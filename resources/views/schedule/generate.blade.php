@@ -2,6 +2,7 @@
 
 @push('plugin-styles')
     {!! Html::style('/assets/plugins/jquery-tags-input/jquery.tagsinput.min.css') !!}
+    {!! Html::style('/assets/plugins/select2/css/select2.min.css') !!}
     {!! Html::style('/assets/plugins/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css') !!}
 @endpush
 
@@ -48,7 +49,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-sm-6"></div>
 
                         <label for="end_date" class="col-sm-2 col-form-label text-right">End</label>
@@ -60,6 +60,17 @@
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-sm-6"></div>
+
+                        <label for="schedule_event_type_id" class="col-sm-2 col-form-label text-right">Event Types</label>
+                        <div class="form-group col-sm-4">
+                            <select name="schedule_event_type_id" class="form-control auto-select2">
+                                <option value="">All Events</option>
+                                @foreach ($scheduleEventTypes as $type)
+                                    <option value="{{$type->id}}">{{$type->title}}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -79,10 +90,12 @@
 @endsection
 
 @push('plugin-scripts')
+    {!! Html::script('/assets/plugins/select2/js/select2.min.js') !!}
     {!! Html::script('/assets/plugins/moment/moment.min.js') !!}
     {!! Html::script('/assets/plugins/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.js') !!}
 @endpush
 
 @push('custom-scripts')
+    {!! Html::script('/assets/js/select2.js') !!}
     {!! Html::script('/assets/js/timepicker.js') !!}
 @endpush
