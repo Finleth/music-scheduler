@@ -72,4 +72,21 @@ class Musician extends AbstractModel
             'status' => config('enums.status.ACTIVE')
         ]);
     }
+
+    /**
+     *
+     * Scope a query to order musicians by their last and then first name
+     *
+     * @param Builder $query
+     * @param string $direction
+     *
+     * @return Builder $query
+     */
+    public function scopeOrderByName(
+        Builder $query,
+        string $direction
+    )
+    {
+        return $query->orderBy('last_name', $direction)->orderBy('first_name', $direction);
+    }
 }

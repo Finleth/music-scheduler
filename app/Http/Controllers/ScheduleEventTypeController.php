@@ -18,6 +18,15 @@ class ScheduleEventTypeController extends AbstractController
         'first_of_month' => 'string'
     ];
 
+
+    /**
+     * ScheduleEventTypeController's class constructor
+     */
+    public function __construct()
+    {
+        $this->middleware(['auth']);
+    }
+
     /**
      * @return Application|Factory|View
      * @throws GenericWebFatalException

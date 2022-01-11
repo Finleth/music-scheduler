@@ -17,6 +17,15 @@ class MusicianController extends AbstractController
         'status' => 'required|string'
     ];
 
+
+    /**
+     * MusicianController's class constructor
+     */
+    public function __construct()
+    {
+        $this->middleware(['auth']);
+    }
+
     /**
      * @return Application|Factory|View
      * @throws GenericWebFatalException
@@ -25,7 +34,8 @@ class MusicianController extends AbstractController
     {
         try {
             return view('musicians.list', [
-                'musicians' => Musician::paginate(config('app.PAGE_SIZE'))
+                'musicians' => Musician::orderByName(config('enums.sort_direction.ASC'))
+                    ->paginate(config('app.PAGE_SIZE'))
             ]);
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());

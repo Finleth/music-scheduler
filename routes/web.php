@@ -58,3 +58,10 @@ Route::post('/schedule/{id}/generate', 'ScheduleController@generate')->name('sch
 // Schedule event routes
 Route::get('/schedule-event/{id}/edit', 'ScheduleEventController@edit')->name('schedule-event-edit');
 Route::post('/schedule-event/{id}/edit', 'ScheduleEventController@update')->name('schedule-event-update');
+
+// Default Route
+Route::get('/', function () {
+    return redirect('login');
+});
+
+require __DIR__.'/auth.php';

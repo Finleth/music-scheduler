@@ -15,6 +15,15 @@ class MusicianInstrumentController extends AbstractController
         'primary' => 'required|string'
     ];
 
+
+    /**
+     * MusicianInstrumentController's class constructor
+     */
+    public function __construct()
+    {
+        $this->middleware(['auth']);
+    }
+
     /**
      * Display an empty form page
      *

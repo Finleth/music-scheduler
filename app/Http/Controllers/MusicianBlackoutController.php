@@ -16,6 +16,15 @@ class MusicianBlackoutController extends AbstractController
         'end' => 'required|date|after_or_equal:start'
     ];
 
+
+    /**
+     * MusicianBlackoutController's class constructor
+     */
+    public function __construct()
+    {
+        $this->middleware(['auth']);
+    }
+
     /**
      * Display an empty form page
      *

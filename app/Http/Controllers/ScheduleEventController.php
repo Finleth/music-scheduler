@@ -22,6 +22,8 @@ class ScheduleEventController extends AbstractController
      */
     public function __construct()
     {
+        $this->middleware(['auth']);
+
         $this->scheduleService = new ScheduleService();
     }
 

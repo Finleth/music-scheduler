@@ -16,6 +16,15 @@ class MusicianScheduleEventTypeController extends AbstractController
         'frequency' => 'required|integer'
     ];
 
+
+    /**
+     * MusicianScheduleEventTypeController's class constructor
+     */
+    public function __construct()
+    {
+        $this->middleware(['auth']);
+    }
+
     /**
      * Display an empty form page
      *

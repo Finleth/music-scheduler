@@ -12,5 +12,10 @@ return [
     'web_portal_theme' => [
         'DARK' => 'dark',
         'LIGHT' => 'light'
+    ],
+
+    'sort_direction' => [
+        'ASC' => 'ASC',
+        'DESC' => 'DESC'
     ]
 ];

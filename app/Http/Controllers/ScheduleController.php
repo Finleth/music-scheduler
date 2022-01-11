@@ -21,11 +21,14 @@ class ScheduleController extends AbstractController
     ];
     protected $scheduleService;
 
+
     /**
      * ScheduleController constructor.
      */
     public function __construct()
     {
+        $this->middleware(['auth']);
+
         $this->scheduleService = new ScheduleService();
     }
 
