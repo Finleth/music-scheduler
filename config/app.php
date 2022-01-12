@@ -58,6 +58,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Pagination Default
+    |--------------------------------------------------------------------------
+    */
+
+    'PAGE_SIZE' => env('PAGE_SIZE', 10),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
@@ -68,6 +76,23 @@ return [
     */
 
     'timezone' => 'UTC',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application DATE FORMATS
+    |--------------------------------------------------------------------------
+    */
+    'DISPLAY_DATE_FORMAT' => env('DISPLAY_DATE_FORMAT', 'M jS, Y'),
+
+    'DISPLAY_DATE_FORMAT_DAY_OF_WEEK' => env('DISPLAY_DATE_FORMAT', 'l, M jS, Y'),
+
+    'INPUT_DATE_FORMAT' => env('INPUT_DATE_FORMAT', 'm/d/Y'),
+
+    'DATE_FORMAT' => env('DATE_FORMAT', 'Y-m-d'),
+
+    'INPUT_TIME_FORMAT' => env('INPUT_TIME_FORMAT', 'g:i A'),
+
+    'ISO_8601_DATE_FORMAT' => 'c',
 
     /*
     |--------------------------------------------------------------------------
