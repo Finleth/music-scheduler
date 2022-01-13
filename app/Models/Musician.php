@@ -26,7 +26,7 @@ class Musician extends AbstractModel
     public function schedule_event_types()
     {
         return $this->belongsToMany(ScheduleEventType::class, 'musicians_schedule_event_types')
-            ->withPivot(['id', 'frequency']);
+            ->withPivot(['id', 'frequency', 'auto_schedule', 'schedule_week']);
     }
 
     /**

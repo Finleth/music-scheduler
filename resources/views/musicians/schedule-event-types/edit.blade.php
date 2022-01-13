@@ -42,20 +42,40 @@
                         <div class="col-sm-4 form-group">
                             <select name="schedule_event_type_id" class="form-control auto-select2">
                                 @foreach ($scheduleEventTypes as $event)
-                                    <option value="{{$event->id}}" {{$scheduleEventType->schedule_event_type_id === $event->id ? 'selected' : ''}}>{{$event->title}}</option>
+                                    <option value="{{$event->id}}" {{(old('schedule_event_type_id') ?? $scheduleEventType->schedule_event_type_id) === $event->id ? 'selected' : ''}}>{{$event->title}}</option>
                                 @endforeach
                             </select>
                         </div>
-
                         <div class="col-sm-6"></div>
 
                         <label for="first_of_month" class="col-sm-2 col-form-label">Frequency</label>
-                        <div class="col-sm-4 input-group">
-                            <input type="number" class="form-control" name="frequency" value="{{$scheduleEventType->frequency ?? '100'}}" min="1" max="100">
+                        <div class="col-sm-4 form-group input-group">
+                            <input type="number" class="form-control" name="frequency" value="{{old('frequency') ?? $scheduleEventType->frequency ?? '100'}}" min="1" max="100">
                             <div class="input-group-append">
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
+                        <div class="col-sm-6"></div>
+
+                        <label for="auto_schedule" class="col-sm-2 col-form-label">Auto Schedule</label>
+                        <div class="col-sm-4 form-group">
+                            <select name="auto_schedule" class="form-control auto-select2">
+                                <option value="{{config('enums.YES')}}">Yes</option>
+                                <option value="{{config('enums.NO')}}" {{(old('auto_schedule') ?? $scheduleEventType->auto_schedule) === config('enums.NO') ? 'selected' : ''}}>No</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6"></div>
+
+                        <label for="schedule_week" class="col-sm-2 col-form-label">Force Assign</label>
+                        <div class="col-sm-4 form-group">
+                            <select name="schedule_week" class="form-control auto-select2">
+                                <option value="">None</option>
+                                @foreach (config('enums.schedulable_weeks') as $value => $week)
+                                    <option value="{{$value}}" {{(old('schedule_week') ?? $value) === $scheduleEventType->schedule_week ? 'selected' : ''}}>{{$week}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-sm-6"></div>
                     </div>
                 </div>
             </div>

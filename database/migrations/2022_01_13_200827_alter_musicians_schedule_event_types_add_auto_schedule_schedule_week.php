@@ -14,7 +14,7 @@ class AlterMusiciansScheduleEventTypesAddAutoScheduleScheduleWeek extends Migrat
     public function up()
     {
         Schema::table('musicians_schedule_event_types', function(Blueprint $table) {
-            $table->string('auto_schedule')->after('frequency');
+            $table->string('auto_schedule')->default(config('enums.YES'))->after('frequency');
             $table->integer('schedule_week')->nullable()->after('auto_schedule')
                 ->comment('Takes priority over auto_schedule. If the musician is scheduled for a specific week for an event, it will assign even with auto_schedule turned off');
         });

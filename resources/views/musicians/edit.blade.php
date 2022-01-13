@@ -89,48 +89,7 @@
 
     @if(Route::current()->getName() != 'musician-new')
     <div class="row">
-        <div class="col-md-4 grid-margin">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-9">
-                            <h5>Instruments</h5>
-                        </div>
-
-                        <div class="col-md-3 d-flex justify-content-end">
-                            <a href="{{route('instrument-new', $musician->id)}}"><i class="btn-icon-prepend text-primary" data-feather="plus-circle"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th class="col-4">Name</th>
-                                    <th class="col-4">Primary</th>
-                                    <th class="col-4"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($musician->instruments as $instrument)
-                                    <tr>
-                                        <td class="col-4">{{$instrument->name}}</td>
-                                        <td class="col-4">{{ ucfirst($instrument->primary) }}</td>
-                                        <td class="col-4">
-                                            <a href="{{route('instrument-edit', ['musician' => $musician->id, 'instrument' => $instrument->id])}}">
-                                                <i class="btn-icon-prepend text-primary" data-feather="edit" width="20"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 grid-margin">
+        <div class="col-md-7 grid-margin">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -149,21 +108,21 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th class="col-4">Title</th>
-                                    <th class="col-4">Frequency</th>
-                                    <th class="col-4"></th>
+                                    <th class="col-3">Title</th>
+                                    <th class="col-3">Frequency</th>
+                                    <th class="col-3">Auto Schedule</th>
+                                    <th class="col-3">Force Assign</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($musician->schedule_event_types as $event)
                                     <tr>
-                                        <td class="col-4">{{$event->title}}</td>
-                                        <td class="col-4">{{$event->pivot->frequency}}%</td>
-                                        <td class="col-4">
-                                            <a href="{{route('musician-event-edit', ['musician' => $musician->id, 'event' => $event->pivot->id])}}">
-                                                <i class="btn-icon-prepend text-primary" data-feather="edit" width="20"></i>
-                                            </a>
+                                        <td class="col-3">
+                                            <a href="{{route('musician-event-edit', ['musician' => $musician->id, 'event' => $event->pivot->id])}}">{{$event->title}}</a>
                                         </td>
+                                        <td class="col-3">{{$event->pivot->auto_schedule === config('enums.YES') ? $event->pivot->frequency . '%' : '-'}}</td>
+                                        <td class="col-3">{{ucfirst($event->pivot->auto_schedule)}}</td>
+                                        <td class="col-3">{{config('enums.schedulable_weeks')[$event->pivot->schedule_week] ?? 'None'}}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -173,42 +132,77 @@
             </div>
         </div>
 
-        <div class="col-md-4 grid-margin">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-9">
-                            <h5>Blackout Dates</h5>
+        <div class="col-md-5">
+            <div class="grid-margin">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <h5>Instruments</h5>
+                            </div>
+
+                            <div class="col-md-3 d-flex justify-content-end">
+                                <a href="{{route('instrument-new', $musician->id)}}"><i class="btn-icon-prepend text-primary" data-feather="plus-circle"></i></a>
+                            </div>
                         </div>
 
-                        <div class="col-md-3 d-flex justify-content-end">
-                            <a href="{{route('blackout-new', $musician->id)}}"><i class="btn-icon-prepend text-primary" data-feather="plus-circle"></i></a>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Primary</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($musician->instruments as $instrument)
+                                        <tr>
+                                            <td>
+                                                <a href="{{route('instrument-edit', ['musician' => $musician->id, 'instrument' => $instrument->id])}}">{{$instrument->name}}</a>
+                                            </td>
+                                            <td>{{ ucfirst($instrument->primary) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th class="col-4">Start</th>
-                                    <th class="col-4">End</th>
-                                    <th class="col-4"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($musician->blackouts as $blackout)
+            <div class="grid-margin">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <h5>Blackout Dates</h5>
+                            </div>
+
+                            <div class="col-md-3 d-flex justify-content-end">
+                                <a href="{{route('blackout-new', $musician->id)}}"><i class="btn-icon-prepend text-primary" data-feather="plus-circle"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
                                     <tr>
-                                        <td class="col-4">{{$blackout->start->format(config('app.DISPLAY_DATE_FORMAT'))}}</td>
-                                        <td class="col-4">{{$blackout->end->format(config('app.DISPLAY_DATE_FORMAT'))}}</td>
-                                        <td class="col-4">
-                                            <a href="{{route('blackout-edit', ['musician' => $musician->id, 'blackout' => $blackout->id])}}">
-                                                <i class="btn-icon-prepend text-primary" data-feather="edit" width="20"></i>
-                                            </a>
-                                        </td>
+                                        <th>Period</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach($musician->blackouts()->where('end', '>', date(config('app.DATE_FORMAT')))->get() as $blackout)
+                                        <tr>
+                                            <td>
+                                                <a href="{{route('blackout-edit', ['musician' => $musician->id, 'blackout' => $blackout->id])}}">
+                                                    {{$blackout->start->format(config('app.DISPLAY_DATE_FORMAT'))}} - {{$blackout->end->format(config('app.DISPLAY_DATE_FORMAT'))}}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
