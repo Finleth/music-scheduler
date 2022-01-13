@@ -37,7 +37,7 @@
                                 @foreach($musicians as $musician)
                                     <tr>
                                         <td>
-                                            <a href="<?= route('musician-edit', $musician->id) ?>"><?= $musician->last_name . ', ' . $musician->first_name ?></a>
+                                            <a href="<?= route('musician-edit', $musician->id) ?>"><?= $musician->last_name . ($musician->first_name ? ', ' . $musician->first_name : '') ?></a>
                                         </td>
                                         <td>
                                             @if ($musician->schedule_event_types->isNotEmpty())

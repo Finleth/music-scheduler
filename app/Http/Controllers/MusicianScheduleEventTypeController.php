@@ -13,7 +13,9 @@ class MusicianScheduleEventTypeController extends AbstractController
 {
     protected $validationData = [
         'schedule_event_type_id' => 'required|integer',
-        'frequency' => 'required|integer'
+        'frequency' => 'required|integer',
+        'auto_schedule' => 'required|string', // further rules added in constructor
+        'schedule_week' => 'nullable|integer'
     ];
 
 
@@ -23,6 +25,8 @@ class MusicianScheduleEventTypeController extends AbstractController
     public function __construct()
     {
         $this->middleware(['auth']);
+
+        $this->validationData['auto_schedule'] .= '|in:' . config('enums.YES') . ',' . config('enums.NO');
     }
 
     /**
