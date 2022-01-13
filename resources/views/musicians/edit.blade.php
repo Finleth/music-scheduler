@@ -49,7 +49,7 @@
                         <div class="form-group row">
                             <label for="first_name" class="col-sm-2 col-form-label">First Name</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" id="first_name" value="{{$musician->first_name}}"
+                                <input type="text" class="form-control" id="first_name" value="{{old('first_name') ?? $musician->first_name}}"
                                     name="first_name" placeholder="First name" {{$readonly ?? ''}}>
                             </div>
 
@@ -57,7 +57,7 @@
 
                             <label for="last_name" class="col-sm-2 col-form-label">Last Name</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" id="last_name" value="{{$musician->last_name}}"
+                                <input type="text" class="form-control" id="last_name" value="{{old('last_name') ?? $musician->last_name}}"
                                     name="last_name" placeholder="Last name" {{$readonly ?? ''}}>
                             </div>
 

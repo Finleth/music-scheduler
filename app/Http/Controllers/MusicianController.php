@@ -12,7 +12,7 @@ use App\Exceptions\GenericWebFatalException;
 class MusicianController extends AbstractController
 {
     protected $validationData = [
-        'first_name' => 'required|string',
+        'first_name' => 'nullable|string',
         'last_name' => 'required|string',
         'status' => 'required|string'
     ];
