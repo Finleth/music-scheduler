@@ -99,14 +99,14 @@ class ScheduleService
                         ])->first();
 
                         if (!$eventExists) {
-                            $musician = $this->getMusicianToAssign($type, $currentDate);
+                            $musician = $this->getMusicianToAssign($type, $scheduleDate);
 
                             if ($type && $scheduleDate && $musician) {
                                 $scheduleEvent = $this->createScheduleEvent($type, $scheduleDate, $musician);
 
                                 // push event to TimeTree
                                 if ($scheduleEvent) {
-                                     $this->createTimeTreeEvent($scheduleEvent);
+                                    // $this->createTimeTreeEvent($scheduleEvent);
                                 } else {
                                     $this->logger->warning(sprintf(
                                         'Error creating schedule event for %s on %s',
@@ -142,13 +142,13 @@ class ScheduleService
     /**
      *
      * @param ScheduleEventType $type
-     * @param DateTime $currentDate
+     * @param Schedule $scheduleDate
      *
      * @return Musician|null
      */
     private function getMusicianToAssign(
         ScheduleEventType $type,
-        DateTime $currentDate
+        Schedule $scheduleDate
     )
     {
         try {
@@ -157,11 +157,11 @@ class ScheduleService
                 'musician' => null,
                 'weight' => 0
             ];
-            $musicians = $type->musicians()->available($currentDate)->get();
+            $musicians = $type->musicians()->available($scheduleDate->event_date)->get();
 
             foreach ($musicians as $musician) {
                 // select musician if the have a forced assigned for that week
-                if ($musician->pivot->schedule_week === ceil((float) $currentDate->format('j') / 7)) {
+                if ((int) $musician->pivot->schedule_week === (int) ceil((int)$scheduleDate->event_date->format('j') / 7)) {
                     return $musician;
                 }
 
@@ -170,12 +170,16 @@ class ScheduleService
                     continue;
                 }
 
-                $scheduleEvent = ScheduleEvent::mostRecentTypeForMusician($musician->id, $type->id)->first();
+                $scheduleEvent = ScheduleEvent::mostRecentTypeForMusician(
+                    $musician->id,
+                    $type->id,
+                    $scheduleDate->time_tree_calendar_id
+                )->first();
 
                 $frequency = $musician->pivot->frequency / 100;
 
                 if ($scheduleEvent) {
-                    $dateDiff = $currentDate->diff($scheduleEvent->schedule->event_date);
+                    $dateDiff = $scheduleDate->event_date->diff($scheduleEvent->schedule->event_date);
                     $weeks = floor($dateDiff->days / 7);
                     $musicianWeights[$musician->id] = [
                         'musician' => $musician,
@@ -188,17 +192,13 @@ class ScheduleService
                     ];
                 }
 
-                $currentSchedule = Schedule::where(['event_date' => $currentDate->format($this->dateFormat)])->first();
-
                 // if musician already scheduled for a different event that day, lower their priority
-                if ($currentSchedule) {
-                    $sameDayEvent = $musician->schedule_events()->where([
-                        'schedule_id' => $currentSchedule->id
-                    ])->first();
+                $sameDayEvent = $musician->schedule_events()->where([
+                    'schedule_id' => $scheduleDate->id
+                ])->first();
 
-                    if ($sameDayEvent) {
-                        $musicianWeights[$musician->id]['weight'] /= $this->defaultMultiplier;
-                    }
+                if ($sameDayEvent) {
+                    $musicianWeights[$musician->id]['weight'] /= $this->defaultMultiplier;
                 }
 
             }
