@@ -71,6 +71,7 @@ class ScheduleService
             } else {
                 $scheduleEventTypes = ScheduleEventType::all();
             }
+
             $currentDate = new DateTime($startDate);
             $endDate = new DateTime($endDate);
 
@@ -105,7 +106,7 @@ class ScheduleService
 
                                 // push event to TimeTree
                                 if ($scheduleEvent) {
-                                    $this->createTimeTreeEvent($scheduleEvent);
+                                     $this->createTimeTreeEvent($scheduleEvent);
                                 } else {
                                     $this->logger->warning(sprintf(
                                         'Error creating schedule event for %s on %s',
@@ -159,6 +160,16 @@ class ScheduleService
             $musicians = $type->musicians()->available($currentDate)->get();
 
             foreach ($musicians as $musician) {
+                // select musician if the have a forced assigned for that week
+                if ($musician->pivot->schedule_week === ceil((float) $currentDate->format('j') / 7)) {
+                    return $musician;
+                }
+
+                // skip any musicians not set to be automatically scheduled
+                if ($musician->pivot->auto_schedule === config('enums.NO')) {
+                    continue;
+                }
+
                 $scheduleEvent = ScheduleEvent::mostRecentTypeForMusician($musician->id, $type->id)->first();
 
                 $frequency = $musician->pivot->frequency / 100;
@@ -178,6 +189,7 @@ class ScheduleService
                 }
 
                 $currentSchedule = Schedule::where(['event_date' => $currentDate->format($this->dateFormat)])->first();
+
                 // if musician already scheduled for a different event that day, lower their priority
                 if ($currentSchedule) {
                     $sameDayEvent = $musician->schedule_events()->where([
