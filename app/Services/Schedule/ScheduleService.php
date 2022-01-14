@@ -106,7 +106,7 @@ class ScheduleService
 
                                 // push event to TimeTree
                                 if ($scheduleEvent) {
-                                    // $this->createTimeTreeEvent($scheduleEvent);
+                                    $this->createTimeTreeEvent($scheduleEvent);
                                 } else {
                                     $this->logger->warning(sprintf(
                                         'Error creating schedule event for %s on %s',
