@@ -252,9 +252,13 @@ class ScheduleService
         try {
             $this->setEventTime($scheduleEvent);
 
+            $displayName = $scheduleEvent->musician->first_name
+                ? $scheduleEvent->musician->first_name
+                : $scheduleEvent->musician->last_name;
+
             $timeTreeEventId = $this->timeTreeService->createEvent(
                 $scheduleEvent->schedule->calendar->time_tree_calendar_id,
-                $scheduleEvent->schedule_event_type->title . ': ' . $scheduleEvent->musician->first_name,
+                $scheduleEvent->schedule_event_type->title . ': ' . $displayName,
                 $this->scheduleEventStart,
                 $this->scheduleEventEnd,
                 0
