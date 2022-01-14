@@ -48,23 +48,27 @@
                         </div>
                         <div class="col-sm-6"></div>
 
-                        <label for="first_of_month" class="col-sm-2 col-form-label">Frequency</label>
-                        <div class="col-sm-4 form-group input-group">
+                        @php
+                            $autoSchedule = (old('auto_schedule') ?? $scheduleEventType->auto_schedule) === config('enums.YES');
+                        @endphp
+
+                        <label for="auto_schedule" class="col-sm-2 col-form-label">Auto Schedule</label>
+                        <div class="col-sm-4 form-group">
+                            <select id="auto_schedule" name="auto_schedule" class="form-control auto-select2">
+                                <option value="{{config('enums.YES')}}">Yes</option>
+                                <option value="{{config('enums.NO')}}" {{$autoSchedule ? '' : 'selected'}}>No</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6"></div>
+
+                        <label for="first_of_month" class="col-sm-2 col-form-label auto_schedule" style="{{$autoSchedule ? '' : 'display: none;'}}">Frequency</label>
+                        <div class="col-sm-4 form-group input-group auto_schedule" style="{{$autoSchedule ? '' : 'display: none;'}}">
                             <input type="number" class="form-control" name="frequency" value="{{old('frequency') ?? $scheduleEventType->frequency ?? '100'}}" min="1" max="100">
                             <div class="input-group-append">
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
-                        <div class="col-sm-6"></div>
-
-                        <label for="auto_schedule" class="col-sm-2 col-form-label">Auto Schedule</label>
-                        <div class="col-sm-4 form-group">
-                            <select name="auto_schedule" class="form-control auto-select2">
-                                <option value="{{config('enums.YES')}}">Yes</option>
-                                <option value="{{config('enums.NO')}}" {{(old('auto_schedule') ?? $scheduleEventType->auto_schedule) === config('enums.NO') ? 'selected' : ''}}>No</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-6"></div>
+                        <div class="col-sm-6 auto_schedule" style="{{$autoSchedule ? '' : 'display: none;'}}"></div>
 
                         <label for="schedule_week" class="col-sm-2 col-form-label">Force Assign</label>
                         <div class="col-sm-4 form-group">
@@ -106,4 +110,5 @@
 
 @push('custom-scripts')
     {!! Html::script('/assets/js/select2.js') !!}
+    {!! Html::script('/assets/js/musician-events.js') !!}
 @endpush
