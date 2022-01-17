@@ -10,6 +10,7 @@ use App\Models\Musician;
 use App\Models\Schedule;
 use App\Models\ScheduleEvent;
 use App\Models\ScheduleEventType;
+use App\Models\ScheduleGeneration;
 use Illuminate\Support\Facades\DB;
 use App\Services\TimeTree\TimeTreeService;
 
@@ -60,7 +61,8 @@ class ScheduleService
     {
         $response = [
             'success' => false,
-            'error' => null
+            'error' => null,
+            'batch' => null
         ];
 
         try {
@@ -77,52 +79,16 @@ class ScheduleService
 
             DB::beginTransaction();
 
+            $scheduleGeneration = $this->createScheduleGeneration();
+
             while ($currentDate->format($this->dateFormat) <= $endDate->format($this->dateFormat)) {
                 foreach ($scheduleEventTypes as $type) {
-                    if ($type->day_of_week === $currentDate->format('w')) {
-                        // skip if current date isn't first of the month
-                        // and the event type requires it
-                        if ($type->first_of_month === config('enums.YES')
-                            && (int) $currentDate->format('j') > 7) {
-                            continue;
-                        }
-
-                        $scheduleDate = Schedule::firstOrCreate([
-                            'time_tree_calendar_id' => $id,
-                            'event_date' => $currentDate->format($this->dateFormat)
-                        ]);
-
-                        // skip if event already exists
-                        $eventExists = ScheduleEvent::where([
-                            'schedule_id' => $scheduleDate->id,
-                            'schedule_event_type_id' => $type->id
-                        ])->first();
-
-                        if (!$eventExists) {
-                            $musician = $this->getMusicianToAssign($type, $scheduleDate);
-
-                            if ($type && $scheduleDate && $musician) {
-                                $scheduleEvent = $this->createScheduleEvent($type, $scheduleDate, $musician);
-
-                                // push event to TimeTree
-                                if ($scheduleEvent) {
-                                    $this->createTimeTreeEvent($scheduleEvent);
-                                } else {
-                                    $this->logger->warning(sprintf(
-                                        'Error creating schedule event for %s on %s',
-                                        $type->title,
-                                        $currentDate->format($this->dateFormat)
-                                    ));
-                                }
-                            } else {
-                                $this->logger->warning(sprintf(
-                                    'Unable to create schedule event for %s on %s',
-                                    $type->title,
-                                    $currentDate->format($this->dateFormat)
-                                ));
-                            }
-                        }
-                    }
+                    $this->generateScheduleRecord(
+                        $id,
+                        $type,
+                        $currentDate,
+                        $scheduleGeneration
+                    );
                 }
 
                 $currentDate->add($this->dayInterval);
@@ -130,13 +96,90 @@ class ScheduleService
 
             DB::commit();
             $response['success'] = true;
+            $response['batch'] = $scheduleGeneration->batch;
 
         } catch (Exception $e) {
-            DB::rollback();
             $this->logger->warning($e->getMessage());
+
+            DB::rollback();
+            $this->logger->warning('Rolling back schedule generation.');
         }
 
         return $response;
+    }
+
+    /**
+     *
+     * @param integer $timeTreeCalendarId
+     * @param ScheduleEventType $type
+     * @param DateTime $currentDate
+     * @param ScheduleGeneration $scheduleGeneration
+     *
+     * @throws Exception
+     * @return void
+     */
+    private function generateScheduleRecord(
+        int $timeTreeCalendarId,
+        ScheduleEventType $type,
+        DateTime $currentDate,
+        ScheduleGeneration $scheduleGeneration
+    )
+    {
+        try {
+            if ($type->day_of_week === $currentDate->format('w')) {
+                // skip if current date isn't first of the month and the event type requires it
+                if ($type->first_of_month === config('enums.YES')
+                    && (int) $currentDate->format('j') > 7
+                ) {
+                    return;
+                }
+
+                $scheduleDate = Schedule::firstOrCreate([
+                    'time_tree_calendar_id' => $timeTreeCalendarId,
+                    'event_date' => $currentDate->format($this->dateFormat)
+                ]);
+
+                // skip if event already exists
+                $eventExists = ScheduleEvent::where([
+                    'schedule_id' => $scheduleDate->id,
+                    'schedule_event_type_id' => $type->id
+                ])->first();
+
+                if (!$eventExists) {
+                    $musician = $this->getMusicianToAssign($type, $scheduleDate);
+
+                    if ($type && $scheduleDate && $musician) {
+                        $scheduleEvent = $this->createScheduleEvent(
+                            $type,
+                            $scheduleDate,
+                            $musician,
+                            $scheduleGeneration
+                        );
+
+                        // push event to TimeTree
+                        // if ($scheduleEvent) {
+                        //     $this->createTimeTreeEvent($scheduleEvent);
+                        // } else {
+                        //     $this->logger->warning(sprintf(
+                        //         'Error creating schedule event for %s on %s',
+                        //         $type->title,
+                        //         $currentDate->format($this->dateFormat)
+                        //     ));
+                        // }
+                    } else {
+                        $this->logger->warning(sprintf(
+                            'Unable to create schedule event for %s on %s',
+                            $type->title,
+                            $currentDate->format($this->dateFormat)
+                        ));
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            $this->logger->warning($e->getMessage());
+
+            throw $e;
+        }
     }
 
     /**
@@ -222,22 +265,38 @@ class ScheduleService
      * @param ScheduleEventType $type
      * @param Schedule $scheduleDate
      * @param Musician $musician
+     * @param ScheduleGeneration $scheduleGeneration
      *
+     * @throws Exception
      * @return ScheduleEvent
      */
     private function createScheduleEvent(
         ScheduleEventType $type,
         Schedule $scheduleDate,
-        Musician $musician
+        Musician $musician,
+        ScheduleGeneration $scheduleGeneration
     )
     {
         try {
-            return ScheduleEvent::firstOrCreate([
-                'schedule_event_type_id' => $type->id,
-                'schedule_id' => $scheduleDate->id
-            ], ['musician_id' => $musician->id]);
+            $scheduleEvent = ScheduleEvent::firstOrCreate(
+                [
+                    'schedule_event_type_id' => $type->id,
+                    'schedule_id' => $scheduleDate->id
+                ],
+                [
+                    'schedule_generation_id' => $scheduleGeneration->id,
+                    'musician_id' => $musician->id
+                ]
+            );
+
+            $scheduleGeneration->events_created++;
+            $scheduleGeneration->save();
+
+            return $scheduleEvent;
         } catch (Exception $e) {
             $this->logger->warning($e->getMessage());
+
+            throw $e;
         }
     }
 
@@ -298,24 +357,47 @@ class ScheduleService
 
     /**
      *
+     * @return ScheduleGeneration
+     */
+    private function createScheduleGeneration()
+    {
+        try {
+            $latestScheduleGeneration = ScheduleGeneration::orderBy('batch', 'DESC')->first();
+            $batch = ($latestScheduleGeneration->batch ?? 0) + 1;
+
+            return ScheduleGeneration::create([
+                'batch' => $batch,
+                'events_created' => 0
+            ]);
+        } catch (Exception $e) {
+            $this->logger->warning($e->getMessage());
+        }
+    }
+
+    /**
+     *
      * @param ScheduleEvent $scheduleEvent
      *
      * @return void
      */
     private function setEventTime(ScheduleEvent $scheduleEvent)
     {
-        $this->scheduleEventStart = new DateTime(sprintf(
-            '%s %s:%s',
-            $scheduleEvent->schedule->event_date->format($this->dateFormat),
-            $scheduleEvent->schedule_event_type->hour,
-            $scheduleEvent->schedule_event_type->minute
-        ), new DateTimeZone('America/Los_Angeles'));
-        $this->scheduleEventEnd = clone $this->scheduleEventStart;
-        $this->scheduleEventEnd->add(new DateInterval('PT1H'));
+        try {
+            $this->scheduleEventStart = new DateTime(sprintf(
+                '%s %s:%s',
+                $scheduleEvent->schedule->event_date->format($this->dateFormat),
+                $scheduleEvent->schedule_event_type->hour,
+                $scheduleEvent->schedule_event_type->minute
+            ), new DateTimeZone('America/Los_Angeles'));
+            $this->scheduleEventEnd = clone $this->scheduleEventStart;
+            $this->scheduleEventEnd->add(new DateInterval('PT1H'));
 
-        // convert to UTC for time tree
-        $utcTimezone = new DateTimeZone('UTC');
-        $this->scheduleEventStart->setTimezone($utcTimezone);
-        $this->scheduleEventEnd->setTimezone($utcTimezone);
+            // convert to UTC for time tree
+            $utcTimezone = new DateTimeZone('UTC');
+            $this->scheduleEventStart->setTimezone($utcTimezone);
+            $this->scheduleEventEnd->setTimezone($utcTimezone);
+        } catch (Exception $e) {
+            $this->logger->warning($e->getMessage());
+        }
     }
 }

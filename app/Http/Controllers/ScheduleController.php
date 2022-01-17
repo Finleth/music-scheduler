@@ -50,19 +50,31 @@ class ScheduleController extends AbstractController
 
     /**
      *
+     * @param Request $request
      * @param integer $id
      *
      * @return Application|Factory|View
      * @throws GenericWebFatalException
      */
-    public function index(int $id)
+    public function index(Request $request, int $id)
     {
         try {
+            $data = $request->all();
+            $start = new DateTime();
+
+            if (array_key_exists('start', $data)) {
+                $start = $data['start'] !== null ? new DateTime($data['start']) : null;
+                $data['start'] = '';
+            }
+
+            unset($data['page']);
+
             return view('schedule.list', [
                 'schedule' => Schedule::ofCalendar($id)
-                    ->futureEvents()
+                    ->eventDateBetween($start)
                     ->orderBy('event_date', 'ASC')
-                    ->paginate(config('app.PAGE_SIZE')),
+                    ->paginate(config('app.PAGE_SIZE'))
+                    ->appends($data),
                 'calendar' => Calendar::where('id', $id)->first()
             ]);
         } catch (Exception $e) {
@@ -119,7 +131,7 @@ class ScheduleController extends AbstractController
                 $responseMessage = 'There was an error creating the schedule.';
             }
 
-            return Redirect::route('schedule-list', $id)
+            return Redirect::route('schedule-list', ['id' => $id, 'start' => '', 'schedule-generation-batch' => $response['batch']])
                 ->with($responseType, $responseMessage);
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());

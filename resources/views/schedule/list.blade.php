@@ -39,16 +39,18 @@
                             </thead>
                             <tbody>
                                 @foreach($schedule as $day)
-                                    <tr>
-                                        <td class="col-6">{{$day->event_date->format(config('app.DISPLAY_DATE_FORMAT_DAY_OF_WEEK'))}}</td>
-                                        <td class="col-6">
-                                            @foreach ($day->events as $event)
-                                                <div class="mb-1">
-                                                    <a href="{{route('schedule-event-edit', $event->id)}}">{{$event->schedule_event_type->title}}: {{$event->musician->first_name ? $event->musician->first_name : $event->musician->last_name}}</a>
-                                                </div>
-                                            @endforeach
-                                        </td>
-                                    </tr>
+                                    @if ($day->events->count() > 0)
+                                        <tr>
+                                            <td class="col-6">{{$day->event_date->format(config('app.DISPLAY_DATE_FORMAT_DAY_OF_WEEK'))}}</td>
+                                            <td class="col-6">
+                                                @foreach ($day->events as $event)
+                                                    <div class="mb-1">
+                                                        <a href="{{route('schedule-event-edit', $event->id)}}">{{$event->schedule_event_type->title}}: {{$event->musician->first_name ? $event->musician->first_name : $event->musician->last_name}}</a>
+                                                    </div>
+                                                @endforeach
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
