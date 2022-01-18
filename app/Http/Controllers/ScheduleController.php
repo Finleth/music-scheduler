@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Services\Schedule\ScheduleService;
 use App\Exceptions\GenericWebFatalException;
 use App\Models\ScheduleEventType;
+use App\Models\ScheduleGeneration;
 
 class ScheduleController extends AbstractController
 {
@@ -50,19 +51,42 @@ class ScheduleController extends AbstractController
 
     /**
      *
+     * @param Request $request
      * @param integer $id
      *
      * @return Application|Factory|View
      * @throws GenericWebFatalException
      */
-    public function index(int $id)
+    public function index(Request $request, int $id)
     {
         try {
+            $data = $request->except('page');
+            $start = new DateTime();
+            $end = null;
+
+            if (array_key_exists('start', $data)) {
+                if ($data['start'] === null) {
+                    $start = null;
+
+                    // Update null to an empty string for Eloquent pagination
+                    $data['start'] = '';
+                } else {
+                    $start = new DateTime($data['start']);
+                }
+            }
+
+            if (array_key_exists('end', $data)) {
+                $end = $data['end'] !== null ? new DateTime($data['end']) : null;
+            }
+
             return view('schedule.list', [
                 'schedule' => Schedule::ofCalendar($id)
-                    ->futureEvents()
+                    ->ofBatch($data['batch'] ?? null)
+                    ->eventDateBetween($start, $end)
                     ->orderBy('event_date', 'ASC')
-                    ->paginate(config('app.PAGE_SIZE')),
+                    ->paginate(config('app.PAGE_SIZE'))
+                    ->appends($data),
+                'scheduleGenerations' => ScheduleGeneration::ofCalendar($id)->get(),
                 'calendar' => Calendar::where('id', $id)->first()
             ]);
         } catch (Exception $e) {
@@ -119,7 +143,7 @@ class ScheduleController extends AbstractController
                 $responseMessage = 'There was an error creating the schedule.';
             }
 
-            return Redirect::route('schedule-list', $id)
+            return Redirect::route('schedule-list', ['id' => $id, 'start' => '', 'batch' => $response['batch']])
                 ->with($responseType, $responseMessage);
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());
