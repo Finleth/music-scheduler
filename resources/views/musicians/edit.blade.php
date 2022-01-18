@@ -115,7 +115,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($musician->schedule_event_types as $event)
+                                @foreach($musician->scheduleEventTypes as $event)
                                     <tr>
                                         <td class="col-3">
                                             <a href="{{route('musician-event-edit', ['musician' => $musician->id, 'event' => $event->pivot->id])}}">{{$event->title}}</a>

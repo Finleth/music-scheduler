@@ -94,7 +94,7 @@ class Schedule extends AbstractModel
     public function scopeOfBatch(Builder $query, int $batch = null)
     {
         if ($batch) {
-            $query->whereHas('events.schedule_generation', function($query) use ($batch) {
+            $query->whereHas('events.scheduleGeneration', function($query) use ($batch) {
                 $query->where('schedule_generations.batch', $batch);
             });
         }

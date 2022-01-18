@@ -29,7 +29,7 @@ class ScheduleEvent extends AbstractModel
      *
      * @return BelongsTo
      */
-    public function schedule_event_type()
+    public function scheduleEventType()
     {
         return $this->belongsTo(ScheduleEventType::class);
     }
@@ -39,7 +39,7 @@ class ScheduleEvent extends AbstractModel
      *
      * @return BelongsTo
      */
-    public function schedule_generation()
+    public function scheduleGeneration()
     {
         return $this->belongsTo(ScheduleGeneration::class);
     }
@@ -94,7 +94,7 @@ class ScheduleEvent extends AbstractModel
     public function scopeOfBatch(Builder $query, int $batch = null)
     {
         if ($batch) {
-            $query->whereHas('schedule_generation', function($query) use ($batch) {
+            $query->whereHas('scheduleGeneration', function($query) use ($batch) {
                 $query->where('schedule_generations.batch', $batch);
             });
         }

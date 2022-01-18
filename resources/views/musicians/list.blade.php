@@ -40,8 +40,8 @@
                                             <a href="<?= route('musician-edit', $musician->id) ?>"><?= $musician->last_name . ($musician->first_name ? ', ' . $musician->first_name : '') ?></a>
                                         </td>
                                         <td>
-                                            @if ($musician->schedule_event_types->isNotEmpty())
-                                                @foreach ($musician->schedule_event_types as $event)
+                                            @if ($musician->scheduleEventTypes->isNotEmpty())
+                                                @foreach ($musician->scheduleEventTypes as $event)
                                                     <div><?= $event->title ?></div>
                                                 @endforeach
                                             @else
