@@ -45,7 +45,7 @@ class ScheduleService
 
     /**
      *
-     * @param integer $id
+     * @param integer $calendarId
      * @param string $startDate
      * @param string $endDate
      * @param ScheduleEventType $scheduleEventType
@@ -53,7 +53,7 @@ class ScheduleService
      * @return array
      */
     public function generateSchedule(
-        int $id,
+        int $calendarId,
         string $startDate,
         string $endDate,
         ScheduleEventType $scheduleEventType = null
@@ -79,12 +79,12 @@ class ScheduleService
 
             DB::beginTransaction();
 
-            $scheduleGeneration = $this->createScheduleGeneration();
+            $scheduleGeneration = $this->createScheduleGeneration($calendarId);
 
             while ($currentDate->format($this->dateFormat) <= $endDate->format($this->dateFormat)) {
                 foreach ($scheduleEventTypes as $type) {
                     $this->generateScheduleRecord(
-                        $id,
+                        $calendarId,
                         $type,
                         $currentDate,
                         $scheduleGeneration
@@ -149,7 +149,7 @@ class ScheduleService
                     $musician = $this->getMusicianToAssign($type, $scheduleDate);
 
                     if ($type && $scheduleDate && $musician) {
-                        $scheduleEvent = $this->createScheduleEvent(
+                        $this->createScheduleEvent(
                             $type,
                             $scheduleDate,
                             $musician,
@@ -357,15 +357,20 @@ class ScheduleService
 
     /**
      *
+     * @param integer $calendarId
+     *
      * @return ScheduleGeneration
      */
-    private function createScheduleGeneration()
+    private function createScheduleGeneration(int $calendarId)
     {
         try {
-            $latestScheduleGeneration = ScheduleGeneration::orderBy('batch', 'DESC')->first();
+            $latestScheduleGeneration = ScheduleGeneration::ofCalendar($calendarId)
+                ->orderBy('batch', 'DESC')
+                ->first();
             $batch = ($latestScheduleGeneration->batch ?? 0) + 1;
 
             return ScheduleGeneration::create([
+                'time_tree_calendar_id' => $calendarId,
                 'batch' => $batch,
                 'events_created' => 0
             ]);

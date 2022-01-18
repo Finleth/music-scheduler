@@ -35,6 +35,16 @@ class ScheduleEvent extends AbstractModel
     }
 
     /**
+     * Get the schedule event's batch.
+     *
+     * @return BelongsTo
+     */
+    public function schedule_generation()
+    {
+        return $this->belongsTo(ScheduleGeneration::class);
+    }
+
+    /**
      * Get the schedule event's musician.
      *
      * @return BelongsTo
@@ -70,5 +80,25 @@ class ScheduleEvent extends AbstractModel
                 'schedule.time_tree_calendar_id' => $timeTreeCalendarId
             ])
             ->orderBy('schedule.event_date', 'DESC');
+    }
+
+    /**
+     *
+     * Scope a query to return schedule events of a certain batch
+     *
+     * @param Builder $query
+     * @param integer $batch
+     *
+     * @return Builder
+     */
+    public function scopeOfBatch(Builder $query, int $batch = null)
+    {
+        if ($batch) {
+            $query->whereHas('schedule_generation', function($query) use ($batch) {
+                $query->where('schedule_generations.batch', $batch);
+            });
+        }
+
+        return $query;
     }
 }

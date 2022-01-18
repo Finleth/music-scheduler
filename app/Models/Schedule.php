@@ -22,11 +22,10 @@ class Schedule extends AbstractModel
     {
         $relation = $this->hasMany(ScheduleEvent::class);
 
-        if (request()->has('schedule-generation-batch')) {
-            $batch = (int) request()->input('schedule-generation-batch');
+        if (request()->has('batch')) {
+            $batch = (int) request()->input('batch');
 
-            $relation->join('schedule_generations', 'schedule_events.schedule_generation_id', '=', 'schedule_generations.id')
-                ->where('schedule_generations.batch', $batch);
+            $relation->ofBatch($batch);
         }
 
         return $relation;
@@ -81,5 +80,25 @@ class Schedule extends AbstractModel
     public function scopeOfCalendar(Builder $query, int $id)
     {
         return $query->where($this->table . '.time_tree_calendar_id', $id);
+    }
+
+    /**
+     *
+     * Scope a query to return schedule rows that contain events of a certain batch
+     *
+     * @param Builder $query
+     * @param integer $batch
+     *
+     * @return Builder
+     */
+    public function scopeOfBatch(Builder $query, int $batch = null)
+    {
+        if ($batch) {
+            $query->whereHas('events.schedule_generation', function($query) use ($batch) {
+                $query->where('schedule_generations.batch', $batch);
+            });
+        }
+
+        return $query;
     }
 }
