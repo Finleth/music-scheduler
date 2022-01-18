@@ -29,7 +29,7 @@ class MusicianScheduleEventType extends AbstractModel
      *
      * @return BelongsTo
      */
-    public function schedule_event_type()
+    public function scheduleEventType()
     {
         return $this->belongsTo(ScheduleEventType::class);
     }

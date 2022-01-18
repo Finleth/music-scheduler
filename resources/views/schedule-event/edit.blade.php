@@ -46,14 +46,14 @@
 
                         <label for="title" class="col-sm-2 col-form-label">Title</label>
                         <div class="col-sm-4 form-group">
-                            <input type="text" name="title" class="form-control" value="{{$scheduleEvent->schedule_event_type->title}}" readonly>
+                            <input type="text" name="title" class="form-control" value="{{$scheduleEvent->scheduleEventType->title}}" readonly>
                         </div>
                         <div class="col-sm-6"></div>
 
                         <label for="musician_id" class="col-sm-2 col-form-label">Musician</label>
                         <div class="form-group col-sm-4">
                             <select name="musician_id">
-                                @foreach ($scheduleEvent->schedule_event_type->musicians as $musician)
+                                @foreach ($scheduleEvent->scheduleEventType->musicians as $musician)
                                     <option value="{{$musician->id}}" {{$musician->id === $scheduleEvent->musician->id ? 'selected' : ''}}>
                                         {{$musician->first_name . ' ' . $musician->last_name}}
                                     </option>

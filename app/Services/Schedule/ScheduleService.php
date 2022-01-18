@@ -236,7 +236,7 @@ class ScheduleService
                 }
 
                 // if musician already scheduled for a different event that day, lower their priority
-                $sameDayEvent = $musician->schedule_events()->where([
+                $sameDayEvent = $musician->scheduleEvents()->where([
                     'schedule_id' => $scheduleDate->id
                 ])->first();
 
@@ -317,7 +317,7 @@ class ScheduleService
 
             $timeTreeEventId = $this->timeTreeService->createEvent(
                 $scheduleEvent->schedule->calendar->time_tree_calendar_id,
-                $scheduleEvent->schedule_event_type->title . ': ' . $displayName,
+                $scheduleEvent->scheduleEventType->title . ': ' . $displayName,
                 $this->scheduleEventStart,
                 $this->scheduleEventEnd,
                 0
@@ -345,7 +345,7 @@ class ScheduleService
             $this->timeTreeService->updateEvent(
                 $scheduleEvent->schedule->calendar->time_tree_calendar_id,
                 $scheduleEvent->time_tree_event_id,
-                $scheduleEvent->schedule_event_type->title . ': ' . $scheduleEvent->musician->first_name,
+                $scheduleEvent->scheduleEventType->title . ': ' . $scheduleEvent->musician->first_name,
                 $this->scheduleEventStart,
                 $this->scheduleEventEnd,
                 0
@@ -391,8 +391,8 @@ class ScheduleService
             $this->scheduleEventStart = new DateTime(sprintf(
                 '%s %s:%s',
                 $scheduleEvent->schedule->event_date->format($this->dateFormat),
-                $scheduleEvent->schedule_event_type->hour,
-                $scheduleEvent->schedule_event_type->minute
+                $scheduleEvent->scheduleEventType->hour,
+                $scheduleEvent->scheduleEventType->minute
             ), new DateTimeZone('America/Los_Angeles'));
             $this->scheduleEventEnd = clone $this->scheduleEventStart;
             $this->scheduleEventEnd->add(new DateInterval('PT1H'));
