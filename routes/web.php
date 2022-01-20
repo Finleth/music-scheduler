@@ -55,6 +55,10 @@ Route::get('/schedule/{id}', 'ScheduleController@index')->name('schedule-list');
 Route::get('/schedule/{id}/generate', 'ScheduleController@generateDisplay')->name('schedule-generate-display');
 Route::post('/schedule/{id}/generate', 'ScheduleController@generate')->name('schedule-generate');
 
+// Schedule event time tree routes
+Route::get('/schedule/{id}/time-tree', 'ScheduleTimeTreeController@index')->name('time-tree-form');
+Route::post('/schedule/{id}/time-tree', 'ScheduleTimeTreeController@create')->name('time-tree-push');
+
 // Schedule event routes
 Route::get('/schedule-event/{id}/edit', 'ScheduleEventController@edit')->name('schedule-event-edit');
 Route::post('/schedule-event/{id}/edit', 'ScheduleEventController@update')->name('schedule-event-update');

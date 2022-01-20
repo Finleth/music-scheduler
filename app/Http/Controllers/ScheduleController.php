@@ -87,7 +87,7 @@ class ScheduleController extends AbstractController
                     ->paginate(config('app.PAGE_SIZE'))
                     ->appends($data),
                 'scheduleGenerations' => ScheduleGeneration::ofCalendar($id)->get(),
-                'calendar' => Calendar::where('id', $id)->first()
+                'calendar' => Calendar::find($id)
             ]);
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());
@@ -106,7 +106,7 @@ class ScheduleController extends AbstractController
         try {
             return view('schedule.generate', [
                 'today' => new DateTime(),
-                'calendar' => Calendar::where('id', $id)->first(),
+                'calendar' => Calendar::find($id),
                 'scheduleEventTypes' => ScheduleEventType::all()
             ]);
         } catch (Exception $e) {

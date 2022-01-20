@@ -12,6 +12,13 @@
         </div>
 
         <div class="d-flex align-items-center flex-wrap text-nowrap">
+            @if ($scheduleGenerations->count())
+                <a href="{{route('time-tree-form', $calendar->id)}}" class="btn btn-outline-success btn-icon-text mr-2 mb-2 mb-md-0">
+                    <i class="btn-icon-prepend" data-feather="cycle"></i>
+                    Push Events to Time Tree
+                </a>
+            @endif
+
             <a href="{{route('schedule-generate', $calendar->id)}}" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0">
                 <i class="btn-icon-prepend" data-feather="edit"></i>
                 Generate Schedule
