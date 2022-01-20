@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use Exception;
-use App\Exceptions\GenericWebFatalException;
-use App\Models\ScheduleEvent;
-use App\Services\Schedule\ScheduleService;
 use Illuminate\Http\Request;
+use App\Models\ScheduleEvent;
 use Illuminate\Support\Facades\Redirect;
+use App\Exceptions\GenericWebFatalException;
+use App\Services\Schedule\ScheduleTimeTreeService;
 
 class ScheduleEventController extends AbstractController
 {
     protected $validationData = [
         'musician_id' => 'required|integer'
     ];
-    protected $scheduleService;
+    protected $scheduleTimeTreeService;
 
     /**
      *
@@ -24,7 +24,7 @@ class ScheduleEventController extends AbstractController
     {
         $this->middleware(['auth']);
 
-        $this->scheduleService = new ScheduleService();
+        $this->scheduleTimeTreeService = new ScheduleTimeTreeService();
     }
 
     /**
@@ -60,10 +60,10 @@ class ScheduleEventController extends AbstractController
             ScheduleEvent::where('id', $id)->update($this->validAttribs($request->all()));
             $scheduleEvent = ScheduleEvent::where('id', $id)->first();
 
-
             if ($scheduleEvent->time_tree_event_id) {
-                $this->scheduleService->updateTimeTreeEvent($scheduleEvent);
-            } // don't create event on TimeTree when updating if time_tree_event_id doesn't exist for now
+                $this->scheduleTimeTreeService->updateTimeTreeEvent($scheduleEvent);
+            }
+            // don't create event on TimeTree when updating if time_tree_event_id doesn't exist for now
 
             return Redirect::route('schedule-list', $scheduleEvent->schedule->calendar->id)
                 ->with('message', 'The event was successfully updated.');

@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\Calendar;
-use Illuminate\Http\Request;
 use App\Models\ScheduleGeneration;
-use Illuminate\Support\Facades\Redirect;
-use App\Services\Schedule\ScheduleService;
 use App\Exceptions\GenericWebFatalException;
+use App\Services\Schedule\ScheduleTimeTreeService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 
 class ScheduleTimeTreeController extends AbstractController
@@ -16,7 +16,7 @@ class ScheduleTimeTreeController extends AbstractController
     protected $validationData = [
         'batch' => 'required|int'
     ];
-    protected $scheduleService;
+    protected $scheduleTimeTreeService;
 
 
     /**
@@ -26,7 +26,7 @@ class ScheduleTimeTreeController extends AbstractController
     {
         $this->middleware(['auth']);
 
-        $this->scheduleService = new ScheduleService();
+        $this->scheduleTimeTreeService = new ScheduleTimeTreeService();
     }
 
 
@@ -61,8 +61,12 @@ class ScheduleTimeTreeController extends AbstractController
         $request->validate($this->validationData);
 
         try {
-            // use new ScheduleTimeTreeService to get schedule events by batch
-            // and create events on time tree using TimeTreeService
+            $data = $this->validAttribs($request->all());
+
+            $response = $this->scheduleTimeTreeService->pushBatchToTimeTree((int) $data['batch']);
+
+            return Redirect::route('schedule-list', $id)
+                ->with('message', sprintf('%s events pushed to TimeTree. %s skipped.', $response['pushed'], $response['skipped']));
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());
         }
