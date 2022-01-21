@@ -41,7 +41,9 @@ class ScheduleTimeTreeController extends AbstractController
     {
         try {
             return view('schedule.time-tree.push', [
-                'scheduleGenerations' => ScheduleGeneration::ofCalendar($id)->get(),
+                'scheduleGenerations' => ScheduleGeneration::ofCalendar($id)
+                    ->hasNonPushedEvents()
+                    ->get(),
                 'calendar' => Calendar::find($id)
             ]);
         } catch (Exception $e) {

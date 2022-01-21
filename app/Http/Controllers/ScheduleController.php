@@ -87,6 +87,9 @@ class ScheduleController extends AbstractController
                     ->paginate(config('app.PAGE_SIZE'))
                     ->appends($data),
                 'scheduleGenerations' => ScheduleGeneration::ofCalendar($id)->get(),
+                'unrunScheduleGenerations' => ScheduleGeneration::ofCalendar($id)
+                    ->hasNonPushedEvents()
+                    ->exists(),
                 'calendar' => Calendar::find($id)
             ]);
         } catch (Exception $e) {
