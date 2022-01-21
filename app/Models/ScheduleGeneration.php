@@ -60,4 +60,20 @@ class ScheduleGeneration extends AbstractModel
     {
         return $query->where($this->table . '.batch', $batch);
     }
+
+    /**
+     *
+     * Scope a query to return schedule_generations with events that have not
+     * been pushed to TimeTree
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeHasNonPushedEvents(Builder $query)
+    {
+        return $query->whereHas('schedule_events', function($query) {
+            $query->whereNull('time_tree_event_id');
+        });
+    }
 }
