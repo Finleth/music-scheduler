@@ -46,7 +46,7 @@ For the final steps of the setup, you will need to go to [TimeTree](https://time
 
 This next step to connect a TimeTree calendar is a brute force implementation and will be updated in the future to allow a seamless integration within the application UI itself.
 
-To connect a TimeTree calendar to this application, you will have to create a TimeTree calendar and take the calendar ID which can be found in the URL when viewing said calendar in the browser like such: https://timetreeapp.com/calendars/{id}. With this calendar ID, manually create a record in the `time_tree_calendars` table with the values:
+To connect a TimeTree calendar to this application, you will have to create a TimeTree calendar and take the calendar ID which can be found in the URL when viewing said calendar in the browser like so: `https://timetreeapp.com/calendars/{id}`. With this calendar ID, manually create a record in the `time_tree_calendars` table with the values:
 
 ```json
 {
