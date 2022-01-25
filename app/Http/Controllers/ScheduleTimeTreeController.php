@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Redirect;
 class ScheduleTimeTreeController extends AbstractController
 {
     protected $validationData = [
-        'batch' => 'required|int'
+        'batch_id' => 'required|int'
     ];
     protected $scheduleTimeTreeService;
 
@@ -65,7 +65,7 @@ class ScheduleTimeTreeController extends AbstractController
         try {
             $data = $this->validAttribs($request->all());
 
-            $response = $this->scheduleTimeTreeService->pushBatchToTimeTree((int) $data['batch']);
+            $response = $this->scheduleTimeTreeService->pushBatchToTimeTree((int) $data['batch_id']);
 
             return Redirect::route('schedule-list', $id)
                 ->with('message', sprintf('%s events pushed to TimeTree. %s skipped.', $response['pushed'], $response['skipped']));
