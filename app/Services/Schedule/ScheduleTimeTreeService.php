@@ -41,7 +41,7 @@ class ScheduleTimeTreeService
      * @return array
      * @throws Exception
      */
-    public function pushBatchToTimeTree(int $batch)
+    public function pushBatchToTimeTree(int $batchId)
     {
         $response = [
             'success' => false,
@@ -50,7 +50,7 @@ class ScheduleTimeTreeService
         ];
 
         try {
-            $scheduleGeneration = ScheduleGeneration::whereBatch($batch)->first();
+            $scheduleGeneration = ScheduleGeneration::find($batchId);
 
             DB::beginTransaction();
 

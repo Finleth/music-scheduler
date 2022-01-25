@@ -37,12 +37,12 @@
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body row">
-                        <label for="batch" class="col-sm-2 col-form-label">Batch</label>
+                        <label for="batch_id" class="col-sm-2 col-form-label">Batch</label>
                         <div class="form-group col-sm-4">
-                            <select id="batch-selector" name="batch" class="form-control" required>
+                            <select id="batch-selector" name="batch_id" class="form-control" required>
                                 <option value=""></option>
                                 @foreach ($scheduleGenerations as $batch)
-                                    <option value="{{$batch->batch}}" data-event-count="{{$batch->events_created}}">
+                                    <option value="{{$batch->id}}" data-event-count="{{$batch->events_created}}">
                                         {{sprintf('Batch %s (%s)', $batch->batch, $batch->created_at->format(config('app.DISPLAY_DATE_FORMAT')))}}
                                     </option>
                                 @endforeach
