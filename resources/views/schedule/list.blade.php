@@ -15,7 +15,7 @@
             @if ($unRunScheduleGenerations)
                 <a href="{{route('time-tree-form', $calendar->id)}}" class="btn btn-outline-success btn-icon-text mr-2 mb-2 mb-md-0">
                     <i class="btn-icon-prepend" data-feather="cycle"></i>
-                    Push Events to Time Tree
+                    Push Events to TimeTree
                 </a>
             @endif
 
