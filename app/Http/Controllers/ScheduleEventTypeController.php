@@ -66,25 +66,10 @@ class ScheduleEventTypeController extends AbstractController
      */
     public function create(Request $request)
     {
-        // Validate the data request
-        $request->validate($this->validationData);
         try {
-            $data = $request->all();
-            $time = new DateTime($data['time']);
+            $insertData = $this->formatForInsertion($request);
 
-            $eventType = [
-                'title' => $data['title'],
-                'minute' => $time->format('i'),
-                'hour' => $time->format('G'),
-                'day_of_month' => '*',
-                'month' => '*',
-                'day_of_week' => $data['day_of_week'],
-                'first_of_month' => isset($data['first_of_month'])
-                    ? config('enums.YES')
-                    : config('enums.NO')
-            ];
-
-            ScheduleEventType::create($eventType);
+            ScheduleEventType::create($insertData);
 
             return Redirect::route('schedule-event-types-list')
                 ->with('message', 'The event type was successfully added.');
@@ -159,6 +144,38 @@ class ScheduleEventTypeController extends AbstractController
 
             return Redirect::route('schedule-event-types-list')
                 ->with('message', 'The event type was successfully deleted.');
+        } catch (Exception $e) {
+            throw new GenericWebFatalException($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param Request $request
+     *
+     * @return array
+     * @throws GenericWebFatalException
+     */
+    public function formatForInsertion(Request $request)
+    {
+        // Validate the data request
+        $request->validate($this->validationData);
+        try {
+
+            $data = $request->all();
+            $time = new DateTime($data['time']);
+
+            return [
+                'title' => $data['title'],
+                'minute' => $time->format('i'),
+                'hour' => $time->format('G'),
+                'day_of_month' => '*',
+                'month' => '*',
+                'day_of_week' => $data['day_of_week'],
+                'first_of_month' => isset($data['first_of_month'])
+                    ? config('enums.YES')
+                    : config('enums.NO')
+            ];
         } catch (Exception $e) {
             throw new GenericWebFatalException($e->getMessage());
         }

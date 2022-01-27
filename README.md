@@ -67,3 +67,21 @@ After creating events you will need to add the musicians. Each musician can then
 Now you are ready to generate the schedule. Go to the calendar you wish to generate the schedule for and go to `Generate Schedule`. Here you can input the dates (dates are inclusive) and which events to schedule and click go! This will create a batch with the events that get created which you can view and confirm the schedule looks good. Once you've confirmed it looks good go to `Push Evenst to TimeTree`. Here you can select the batch you just created and push the events to TimeTree.
 
 You can update the events at any point and they will be updated on TimeTree.
+
+## Testing
+
+To get the Laravel Unit Testing running you will first need to create a copy of your `.env` file and name it `.env.testing`. Replace the database credentials here with a database you can use for testing that is separate from your local development database.
+
+To seed this database, you can run:
+
+```bash
+php artisan migrate --env=testing
+```
+
+Per the [Laravel docs](https://laravel.com/docs/8.x/configuration#additional-environment-files), passing the `--env` option tells Laravel to use a separare `.env` file suffixed with the parameter you pass.
+
+To execute the tests, run:
+
+```bash
+php artisan test
+```
