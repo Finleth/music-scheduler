@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class MusicianScheduleEventType extends AbstractModel
 {
+    use HasFactory;
+
     protected $table = 'musicians_schedule_event_types';
     protected $fillable = [
         'musician_id',
