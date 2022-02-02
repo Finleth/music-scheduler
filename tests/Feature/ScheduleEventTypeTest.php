@@ -2,59 +2,54 @@
 
 namespace Tests\Feature;
 
-use App\Models\ScheduleEventType;
 use Tests\TestCase;
-use App\Models\User;
+use App\Traits\ActingAsUser;
+use App\Models\ScheduleEventType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ScheduleEventTypeTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, ActingAsUser;
 
     protected $baseUrl = '/schedule-event-types';
 
     /**
-     * Confirm Schedule Event Types list can be loaded and displays record
+     * Test Schedule Event Types list can be loaded and displays record
      *
      * @return void
      */
     public function test_schedule_event_type_list_screen_can_be_rendered_and_displays_record()
     {
-        $user = User::factory()->create();
         $scheduleEventType = ScheduleEventType::factory()->create();
 
-        $this->actingAs($user)
+        $this->actingAs($this->actingAs)
             ->get($this->baseUrl)
             ->assertStatus(200)
             ->assertSeeText($scheduleEventType->title);
     }
 
     /**
-     * Confirm Schedule Event Types form can be loaded
+     * Test Schedule Event Types form can be loaded
      *
      * @return void
      */
     public function test_schedule_event_type_form_screen_can_be_rendered()
     {
-        $user = User::factory()->create();
-
-        $this->actingAs($user)
-            ->get($this->baseUrl . '/new')
+        $this->actingAs($this->actingAs)
+            ->get($this->getCreateUrl())
             ->assertStatus(200);
     }
 
     /**
-     * Confirm Schedule Event Types form can be submitted
+     * Test Schedule Event Types form can be submitted
      *
      * @return void
      */
     public function test_schedule_event_type_form_can_be_submitted()
     {
-        $user = User::factory()->create();
-
-        $this->actingAs($user)
+        $this->actingAs($this->actingAs)
             ->followingRedirects()
-            ->post($this->baseUrl . '/new', [
+            ->post($this->getCreateUrl(), [
                 'title' => 'Sunday Morning',
                 'time' => '11:00',
                 'day_of_week' => 0,
@@ -65,34 +60,31 @@ class ScheduleEventTypeTest extends TestCase
     }
 
     /**
-     * Confirm Schedule Event Types form can be loaded
+     * Test Schedule Event Types form can be loaded
      *
      * @return void
      */
     public function test_schedule_event_type_edit_form_screen_can_be_rendered()
     {
-        $user = User::factory()->create();
         $scheduleEventType = ScheduleEventType::factory()->create();
 
-        $this->actingAs($user)
-            ->get($this->baseUrl . '/' . $scheduleEventType->id . '/edit')
+        $this->actingAs($this->actingAs)
+            ->get($this->getEditUrl($scheduleEventType))
             ->assertStatus(200);
     }
 
     /**
-     * Confirm Schedule Event Types list can be loaded and displays record
+     * Test Schedule Event Types list can be loaded and displays record
      *
      * @return void
      */
     public function test_schedule_event_type_edit_form_can_be_submitted()
     {
-        $user = User::factory()->create();
         $scheduleEventType = ScheduleEventType::factory()->create();
-        $editUrl = $this->baseUrl . '/' . $scheduleEventType->id . '/edit';
 
-        $this->actingAs($user)
+        $this->actingAs($this->actingAs)
             ->followingRedirects()
-            ->post($editUrl, [
+            ->post($this->getEditUrl($scheduleEventType), [
                 'title' => '1st Prayer Meeting',
                 'time' => '19:00',
                 'day_of_week' => 3,
@@ -103,19 +95,18 @@ class ScheduleEventTypeTest extends TestCase
     }
 
     /**
-     * Confirm Schedule Event Types list can be loaded and displays record
+     * Test Schedule Event Types list can be loaded and displays record
      *
      * @return void
      */
     public function test_schedule_event_type_can_be_deleted()
     {
-        $user = User::factory()->create();
         $scheduleEventType = ScheduleEventType::factory()->create();
 
-        $this->actingAs($user)
+        $this->actingAs($this->actingAs)
             ->followingRedirects()
-            ->get($this->baseUrl . '/' . $scheduleEventType->id . '/delete')
+            ->get($this->getDeleteUrl($scheduleEventType))
             ->assertStatus(200)
-            ->assertSee('The event type was successfully deleted.');;
+            ->assertSee('The event type was successfully deleted.');
     }
 }
