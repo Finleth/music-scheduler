@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\ScheduleEventType;
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class MusicianScheduleEventTypeFactory extends Factory
+class MusicianBlackoutFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -14,9 +14,11 @@ class MusicianScheduleEventTypeFactory extends Factory
      */
     public function definition()
     {
+        $tomorrow = new DateTime('tomorrow');
+
         return [
-            'frequency' => $this->faker->numberBetween(1, 100),
-            'auto_schedule' => config('enums.YES')
+            'start' => $this->faker->date('now'),
+            'end' => $this->faker->date($tomorrow->format(config('app.DATE_FORMAT')))
         ];
     }
 }
