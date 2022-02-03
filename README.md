@@ -64,7 +64,7 @@ Once you're logged in you will need to create events. You will be required to gi
 
 After creating events you will need to add the musicians. Each musician can then be assigned to an event with the option to adjust their frequency so they get scheduled less frequently. Adding blackout dates for the musicians means the auto-generation will not schedule them during those dates. Adding instruments currently has no effect on the scheduling and is just for records.
 
-Now you are ready to generate the schedule. Go to the calendar you wish to generate the schedule for and go to `Generate Schedule`. Here you can input the dates (dates are inclusive) and which events to schedule and click go! This will create a batch with the events that get created which you can view and confirm the schedule looks good. Once you've confirmed it looks good go to `Push Evenst to TimeTree`. Here you can select the batch you just created and push the events to TimeTree.
+Now you are ready to generate the schedule. Go to the calendar you wish to generate the schedule for and go to `Generate Schedule`. Here you can input the dates (dates are inclusive) and which events to schedule and click go! This will create a batch with the events that get created which you can view and confirm the schedule looks good. Once you've confirmed it looks good go to `Push Events to TimeTree`. Here you can select the batch you just created and push the events to TimeTree.
 
 You can update the events at any point and they will be updated on TimeTree.
 
@@ -85,3 +85,11 @@ To execute the tests, run:
 ```bash
 php artisan test
 ```
+
+Or to execute a specific feature test:
+
+```bash
+php artisan test --filter MusicianTest
+```
+
+Just replace `MusicianTest` with the name of the test you want to run.
