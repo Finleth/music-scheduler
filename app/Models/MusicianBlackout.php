@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class MusicianBlackout extends AbstractModel
 {
+    use HasFactory;
+
     protected $table = 'musician_blackouts';
     protected $fillable = ['musician_id', 'start', 'end'];
     protected $casts = [
