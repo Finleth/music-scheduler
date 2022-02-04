@@ -37,7 +37,7 @@ class MusicianBlackoutTest extends TestCase
      *
      * @return void
      */
-    public function test_musician_schedule_event_type_list_screen_can_be_rendered_and_displays_record()
+    public function test_musician_blackout_list_screen_can_be_rendered_and_displays_record()
     {
         $musicianBlackout = MusicianBlackout::factory()->create([
             'musician_id' => $this->musician->id

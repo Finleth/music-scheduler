@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class MusicianInstrument extends AbstractModel
 {
+    use HasFactory;
+
     protected $table = 'musician_instruments';
     protected $fillable = ['musician_id', 'name', 'primary'];
 
