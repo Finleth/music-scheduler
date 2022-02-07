@@ -6,16 +6,12 @@ use Tests\TestCase;
 use App\Models\Musician;
 use App\Traits\ActingAsUser;
 use App\Models\MusicianInstrument;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class MusicianInstrumentTest extends TestCase
 {
-    use RefreshDatabase;
     use ActingAsUser {
         setUp as actingAsUserSetUp;
     }
-
-    protected $baseUrl;
 
     /**
      * @var Musician

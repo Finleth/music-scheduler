@@ -5,11 +5,10 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Traits\ActingAsUser;
 use App\Models\Musician;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class MusicianTest extends TestCase
 {
-    use RefreshDatabase, ActingAsUser;
+    use ActingAsUser;
 
     protected $baseUrl = '/musicians';
 

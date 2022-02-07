@@ -5,11 +5,10 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Traits\ActingAsUser;
 use App\Models\ScheduleEventType;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ScheduleEventTypeTest extends TestCase
 {
-    use RefreshDatabase, ActingAsUser;
+    use ActingAsUser;
 
     protected $baseUrl = '/schedule-event-types';
 

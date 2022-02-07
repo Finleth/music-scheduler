@@ -4,9 +4,12 @@ namespace App\Models;
 
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Schedule extends AbstractModel
 {
+    use HasFactory;
+
     protected $table = 'schedule';
     protected $fillable = ['time_tree_calendar_id', 'event_date'];
     protected $casts = [

@@ -7,16 +7,12 @@ use Tests\TestCase;
 use App\Models\Musician;
 use App\Traits\ActingAsUser;
 use App\Models\MusicianBlackout;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class MusicianBlackoutTest extends TestCase
 {
-    use RefreshDatabase;
     use ActingAsUser {
         setUp as actingAsUserSetUp;
     }
-
-    protected $baseUrl;
 
     /**
      * @var Musician
