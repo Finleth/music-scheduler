@@ -7,16 +7,12 @@ use App\Models\Musician;
 use App\Models\MusicianScheduleEventType;
 use App\Models\ScheduleEventType;
 use App\Traits\ActingAsUser;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class MusicianScheduleEventTypeTest extends TestCase
 {
-    use RefreshDatabase;
     use ActingAsUser {
         setUp as actingAsUserSetUp;
     }
-
-    protected $baseUrl;
 
     /**
      * @var Musician

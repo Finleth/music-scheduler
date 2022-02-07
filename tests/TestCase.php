@@ -3,11 +3,20 @@
 namespace Tests;
 
 use App\Models\AbstractModel;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
+    use RefreshDatabase;
     use CreatesApplication;
+
+    /**
+     * Test case's base URL
+     *
+     * @var string
+     */
+    protected $baseUrl;
 
     /**
      * Create the create page URL
