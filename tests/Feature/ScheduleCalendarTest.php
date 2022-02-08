@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use DateTime;
 use Tests\TestCase;
 use App\Models\Calendar;
 use App\Models\Musician;
@@ -66,5 +67,38 @@ class ScheduleCalendarTest extends TestCase
                 $scheduleEvent->scheduleEventType->title,
                 $scheduleEvent->musician->first_name
             ]);
+    }
+
+    /**
+     * Test calendar schedule generation form can be rendered
+     *
+     * @return void
+     */
+    public function test_calendar_schedule_generation_form_screen_can_be_rendered()
+    {
+        $this->actingAs($this->actingAs)
+            ->get($this->baseUrl . '/generate')
+            ->assertStatus(200);
+    }
+
+    /**
+     * Test calendar schedule generation form can be submitted
+     *
+     * @return void
+     */
+    public function test_calendar_schedule_generation_form_can_be_submitted()
+    {
+        $today = new DateTime();
+        $nextWeek = new DateTime();
+        $nextWeek->modify('+6 days');
+
+        $this->actingAs($this->actingAs)
+            ->followingRedirects()
+            ->post($this->baseUrl . '/generate', [
+                'start_date' => $today->format(config('app.DATE_FORMAT')),
+                'end_date' => $nextWeek->format(config('app.DATE_FORMAT'))
+            ])
+            ->assertStatus(200)
+            ->assertSeeText('The schedule was successfully generated.');
     }
 }
